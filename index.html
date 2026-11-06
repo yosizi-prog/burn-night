@@ -14,6 +14,7 @@ h1{margin:0;font-size:22px;letter-spacing:.3em;font-weight:600;text-shadow:0 0 1
 #sub{margin:4px 0 0;font-size:12px;opacity:.8;letter-spacing:.08em}
 #cnt{font-size:12px;opacity:.85;text-align:right;line-height:1.6}
 #snd{pointer-events:auto;margin-top:6px;background:rgba(0,0,0,.4);border:1px solid rgba(255,200,140,.4);color:var(--fg);border-radius:18px;padding:4px 10px;font:inherit;font-size:12px}
+#ltb.on{background:rgba(255,160,60,.35);border-color:#ffb020}
 #ui{position:fixed;left:0;right:0;bottom:0;padding:28px 14px calc(14px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;background:linear-gradient(transparent,rgba(5,6,15,.9))}
 #t{flex:1;min-width:0;background:rgba(243,230,200,.94);color:#2a1a0c;border:0;border-radius:6px;padding:12px;font:inherit;font-size:16px}
 #t::placeholder{color:#8a7a62}
@@ -62,9 +63,9 @@ h1{margin:0;font-size:22px;letter-spacing:.3em;font-weight:600;text-shadow:0 0 1
 </style></head><body>
 <canvas id="c"></canvas>
 <div id="top"><div><h1>Burn Night</h1><p id="sub">手放したいことを書いて、火にくべよう</p></div>
-<div><div id="cnt"></div><div id="bs"><button id="wxb" class="mb"></button><button id="tmb" class="mb"></button><button id="nb" class="mb">🌙 一晩</button><button id="snd" class="mb" aria-label="音">🔇 音</button></div></div></div>
+<div><div id="cnt"></div><div id="bs"><button id="wxb" class="mb"></button><button id="tmb" class="mb"></button><button id="nb" class="mb">🌙 一晩</button><button id="snd" class="mb" aria-label="音">🔇 音</button><button id="ltb" class="mb">🍃 軽い</button></div></div></div>
 <div id="toast"></div>
-<div id="intro"><div><h2>Burn Night</h2><p>手放したいことを紙に書いて、<br>火にくべよう。<br>灰は星になって、夜空に残る。</p><button id="i1" class="nbtn">🔊 音ありで始める</button><button id="i2" class="nbtn sub">音なしで始める</button><p class="terms">燃やした言葉は、この端末の夜空にだけ星として残ります。ほかの人と共有されることはありません。</p></div></div>
+<div id="intro"><div><h2>Burn Night</h2><p>手放したいことを紙に書いて、<br>火にくべよう。<br>灰は星になって、夜空に残る。</p><button id="i1" class="nbtn">🔊 音ありで始める</button><button id="i2" class="nbtn sub">音なしで始める</button><button id="i3" class="nbtn sub">🍃 軽いモードで始める</button><p class="terms">燃やした言葉は、この端末の夜空にだけ星として残ります。ほかの人と共有されることはありません。</p></div></div>
 <div id="nr" hidden><h2>夜が明けた</h2><p id="nt"></p><p id="nw"></p><div><button id="n1" class="nbtn">もう一晩</button><button id="n2" class="nbtn sub">閉じる</button></div></div>
 <div id="sc" hidden><span id="st"></span><button id="lk" hidden></button><button id="rp" hidden>🚩</button></div>
 <div id="vid" hidden><video id="pv" playsinline loop muted autoplay></video><div id="vb"><button id="shr" class="nbtn">共有</button><button id="sv">動画を保存</button><button id="cl">閉じる</button></div><p id="vm"></p></div>
@@ -92,7 +93,8 @@ function applyBg(){const ph=phase();let im=mainImg,pos=BG_POS.night,pad=padMain;
  else if(ph==='dawn'&&dawnReady){im=dawnImg;pos=BG_POS.dawn;pad=padDawn}
  img=im;CFG.fireX=pos.fireX;CFG.fireBase=pos.fireBase;CFG.fireMid=pos.fireMid;CFG.fireTarget=pos.fireTarget;
  if(pad){padT=pad.t;padT0=pad.t0;padB=pad.b;padB0=pad.b0}}
-function resize(){const d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0)}
+let LIGHT=false;try{LIGHT=localStorage.getItem('bn_light')==='1'}catch(e){}
+function resize(){const d=LIGHT?1:Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0)}
 addEventListener('resize',resize);resize();
 function M(){const wr=W/img.width,s=Math.max(wr,Math.min(H/img.height,1.9*wr)),dw=img.width*s,dh=img.height*s;
  const ox=Math.min(0,Math.max(W-dw,W/2-CFG.fireX*dw)),oy=dh>=H?(H-dh)*0.75:Math.max(0,Math.min(H-dh,H*.58-CFG.fireBase*dh));return{s,dw,dh,ox,oy}}
@@ -114,7 +116,7 @@ function count(){$('cnt').innerHTML='燃やした言葉　'+burned+'<br>みん�
 count();
 // embers
 let em=[],ash=[],c10=false,c50=false;
-function ember(x,y,o={}){if(em.length>700)return;em.push({x,y,vx:o.vx??rnd(-15,15),vy:o.vy??-rnd(40,120),l:0,m:o.m??rnd(1.2,3),s:o.s??rnd(1,2.6),h:o.h??rnd(15,40)})}
+function ember(x,y,o={}){if(em.length>(LIGHT?200:700))return;em.push({x,y,vx:o.vx??rnd(-15,15),vy:o.vy??-rnd(40,120),l:0,m:o.m??rnd(1.2,3),s:o.s??rnd(1,2.6),h:o.h??rnd(15,40)})}
 // paper
 let paper=null,spirit=null,toastT;
 function toast(s,ms=2600){const e=$('toast');e.textContent=s;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),ms)}
@@ -202,7 +204,7 @@ function updateFire(dt,k){
   g.addColorStop(0,`rgba(8,6,12,${a})`);g.addColorStop(.7,`rgba(8,6,12,${a*.8})`);g.addColorStop(1,'rgba(8,6,12,0)');
   ctx.fillStyle=g;ctx.fillRect(-r,-r,2*r,2*r);ctx.restore()}
  const pf=CFG.painted?.5:1;
- for(let i=0;i<3;i++)if(Math.random()<heat*pf*.9)fl.push({x:bx+rnd(-1,1)*m.dw*.045*(.4+heat),y:by-m.dw*.01,l:0,m:rnd(.5,.9)*(.6+heat*.8),s:m.dw*(.02+.035*heat)*rnd(.7,1.2),v:m.dw*rnd(.25,.45)*(.5+heat),p:rnd(0,6)});
+ for(let i=0;i<(LIGHT?1:3);i++)if(Math.random()<heat*pf*.9)fl.push({x:bx+rnd(-1,1)*m.dw*.045*(.4+heat),y:by-m.dw*.01,l:0,m:rnd(.5,.9)*(.6+heat*.8),s:m.dw*(.02+.035*heat)*rnd(.7,1.2),v:m.dw*rnd(.25,.45)*(.5+heat),p:rnd(0,6)});
  ctx.globalCompositeOperation='lighter';
  fl=fl.filter(f=>{f.l+=dt;if(f.l>f.m)return false;const q=f.l/f.m;f.y-=f.v*dt;f.x+=Math.sin(T*7+f.p)*m.dw*.05*dt;
   ctx.fillStyle=`hsla(${(aro?200:45)-38*q},100%,${68-22*q}%,${.5*(1-q)})`;ctx.beginPath();ctx.arc(f.x,f.y,f.s*(1-.55*q),0,7);ctx.fill();return true});
@@ -210,7 +212,7 @@ function updateFire(dt,k){
  flying=flying.filter(f=>{f.u+=dt/.75;const e=Math.min(1,f.u),x=f.x0+(fx-f.x0)*e,y=f.y0+(fy-f.y0)*e-Math.sin(e*Math.PI)*90;
   const w=f.t==='twig'?30:f.t==='log'?42:56,h=f.t==='twig'?5:f.t==='log'?11:17;
   ctx.save();ctx.translate(x,y);ctx.rotate(e*6);ctx.fillStyle='#5a3a1e';ctx.fillRect(-w/2,-h/2,w,h);ctx.fillStyle='#c9a06a';ctx.fillRect(w/2-3,-h/2,3,h);ctx.restore();
-  if(f.u>=1){const o=WOOD[f.t];if(nm.on)nm.wood++;pieces.push({pw:o.pw,dur:o.dur,age:0,ramp:o.ramp,a:o.a});for(let i=0;i<22;i++)ember(fx+rnd(-30,30),fy+rnd(-10,10),{vy:-rnd(60,220)*k,vx:rnd(-50,50)});sfx('add');return false}return true})}
+  if(f.u>=1){const o=WOOD[f.t];if(nm.on)nm.wood++;pieces.push({pw:o.pw,dur:o.dur,age:0,ramp:o.ramp,a:o.a});for(let i=0;i<(LIGHT?8:22);i++)ember(fx+rnd(-30,30),fy+rnd(-10,10),{vy:-rnd(60,220)*k,vx:rnd(-50,50)});sfx('add');return false}return true})}
 // weather & time of day
 const WX=['clear','rain','snow','fog'],WL={clear:'🌙 晴れ',rain:'🌧 雨',snow:'❄️ 雪',fog:'🌫 霧'};
 let wx='clear',GW=1,EB=1,wp=[];
@@ -229,14 +231,14 @@ function drawTint(){const p=phase();if(p==='night')return;
  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);ctx.globalCompositeOperation='source-over';
  const pr=nm.on?nm.t/NL:nm.fin?1:0;if(pr>.85){ctx.globalCompositeOperation='screen';ctx.fillStyle=`rgba(255,215,175,${Math.min(1,(pr-.85)/.15)*.5})`;ctx.fillRect(0,0,W,H);ctx.globalCompositeOperation='source-over'}}
 function drawWx(dt,k){
- if(wx==='rain'||wx==='snow'){const n=wx==='rain'?170:110;
+ if(wx==='rain'||wx==='snow'){const n=wx==='rain'?(LIGHT?60:170):(LIGHT?40:110);
   while(wp.length<n)wp.push({x:rnd(-50,W+50),y:rnd(-H,0),v:wx==='rain'?rnd(700,1000):rnd(30,70),r:rnd(1,2.6),s:rnd(0,6)});
   ctx.save();
   if(wx==='rain'){ctx.strokeStyle='rgba(170,200,255,.38)';ctx.lineWidth=1.2;ctx.beginPath();
    wp.forEach(d=>{d.y+=d.v*dt*k;d.x-=d.v*dt*k*.12;if(d.y>H){d.y=rnd(-80,0);d.x=rnd(-50,W+50)}ctx.moveTo(d.x,d.y);ctx.lineTo(d.x+d.v*.012*k,d.y-d.v*.035*k)});ctx.stroke()}
   else{ctx.fillStyle='rgba(255,255,255,.85)';wp.forEach(d=>{d.y+=d.v*dt*k;d.x+=Math.sin(T*.8+d.s)*18*dt;if(d.y>H){d.y=rnd(-30,0);d.x=rnd(0,W)}ctx.beginPath();ctx.arc(d.x,d.y,d.r*k*.9,0,7);ctx.fill()})}
   ctx.restore()}
- if(wx==='fog'){ctx.globalCompositeOperation='screen';
+ if(wx==='fog'&&!LIGHT){ctx.globalCompositeOperation='screen';
   for(let i=0;i<5;i++){const x=((T*14*(1+i*.3)+i*W*.35)%(W*1.6))-W*.3,y=P(.5,.5+.05*i)[1],r=W*.55;
    const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,'rgba(150,170,200,.26)');g.addColorStop(1,'rgba(150,170,200,0)');ctx.fillStyle=g;ctx.fillRect(x-r,y-r,2*r,2*r)}
   ctx.globalCompositeOperation='source-over'}}
@@ -251,7 +253,17 @@ function pubText(s){s=s.replace(/https?:\/\/\S+|www\.\S+|[\w.+-]+@[\w-]+\.[\w.]+
 function hs(s){let h=7;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return 'h'+h.toString(36)}
 let reps={},myReps=new Set();
 $('rp').onclick=()=>{const s=sel;if(!s||!s.id||!db)return;myReps.add(s.id);db.collection('reports').doc(s.id+'_'+(uid||'x')).set({s:s.id,u:uid||'x',ts:Date.now()}).catch(()=>{});rebuild();selStar(null);toast('報告したよ。この星は見えなくしたよ')};
-$('i1').onclick=()=>{$('intro').remove();if(!on)$('snd').onclick()};$('i2').onclick=()=>$('intro').remove();
+$('i1').onclick=()=>{$('intro').remove();if(!on)$('snd').onclick()};$('i2').onclick=()=>$('intro').remove();$('i3').onclick=()=>{LIGHT=true;applyLight();$('intro').remove()};
+// 軽いモード（省エネ）：解像度を下げ、粒子を減らし、30fpsにする。設定は端末に保存
+function applyLight(){
+ try{localStorage.setItem('bn_light',LIGHT?'1':'0')}catch(e){}
+ $('ltb').textContent=LIGHT?'🍃 軽い ✓':'🍃 軽い';
+ $('ltb').classList.toggle('on',LIGHT);
+ em=em.slice(-(LIGHT?200:700));fl=[];wp=[];
+ resize();
+}
+$('ltb').onclick=()=>{LIGHT=!LIGHT;applyLight();toast(LIGHT?'軽いモードにしたよ。火は少しおとなしくなるけど、スマホは熱くなりにくいよ':'通常モードに戻したよ')};
+applyLight();
 $('shr').onclick=async()=>{if(!vblob)return;const ext=vblob.type.includes('mp4')?'mp4':'webm';
  try{const f=new File([vblob],'burn-night.'+ext,{type:vblob.type});
   if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],text:'#BurnNight'});$('vm').textContent='';return}
@@ -259,7 +271,7 @@ $('shr').onclick=async()=>{if(!vblob)return;const ext=vblob.type.includes('mp4')
   $('vm').textContent='この端末では共有メニューが使えない。保存してから投稿してね'}
  catch(e){if(!e||e.name!=='AbortError')$('vm').textContent='共有できなかった。保存してから投稿してね'}};
 let mt=null,mtT=rnd(10,22);
-function meteor(dt){if(nm.on&&nm.t/NL>.85)return;mtT-=dt;
+function meteor(dt){if(LIGHT||nm.on&&nm.t/NL>.85)return;mtT-=dt;
  if(!mt&&mtT<=0){mt={x:rnd(.35,1)*W,y:rnd(.05,.22)*H,l:0};mtT=rnd(16,34)}
  if(mt){mt.l+=dt;const q=mt.l/1.1;if(q>=1){mt=null;return}
   const x=mt.x-q*W*.45,y=mt.y+q*H*.16,tx=x+W*.12,ty=y-H*.035,g=ctx.createLinearGradient(x,y,tx,ty);
@@ -304,6 +316,7 @@ addEventListener('pointerup',()=>{if(drag&&paper){drag=null;paper.drag=false;
 // loop
 let last=performance.now(),T=0;
 function frame(now){
+ if(LIGHT&&now-last<33){requestAnimationFrame(frame);return}
  const dt=Math.min(.05,(now-last)/1000);last=now;T+=dt;
  applyBg();
  ctx.fillStyle='#070a18';ctx.fillRect(0,0,W,H);
@@ -316,8 +329,8 @@ function frame(now){
  const k=Math.max(.5,H/700);
  // fire glow flicker
  if(ready){const[fx,fy]=P(CFG.fireX,CFG.fireMid),m=M(),a=(.16+.07*Math.sin(T*9)+.04*Math.sin(T*23.7)+Math.random()*.03)*GW*(.25+.9*heat);
-  const g=ctx.createRadialGradient(fx,fy,0,fx,fy,m.dw*(.12+.2*heat));g.addColorStop(0,`rgba(255,160,60,${a})`);g.addColorStop(1,'rgba(255,100,20,0)');
-  ctx.globalCompositeOperation='lighter';ctx.fillStyle=g;ctx.fillRect(0,0,W,H);ctx.globalCompositeOperation='source-over';
+  if(!LIGHT){const g=ctx.createRadialGradient(fx,fy,0,fx,fy,m.dw*(.12+.2*heat));g.addColorStop(0,`rgba(255,160,60,${a})`);g.addColorStop(1,'rgba(255,100,20,0)');
+  ctx.globalCompositeOperation='lighter';ctx.fillStyle=g;ctx.fillRect(0,0,W,H);ctx.globalCompositeOperation='source-over'}
   const[bx,by]=P(CFG.fireX,CFG.fireBase);for(let i=0;i<2;i++)if(Math.random()<EB*heat*1.4+.03)ember(bx+rnd(-.05,.05)*m.dw,by+rnd(-.04,.02)*m.dh,{vy:-rnd(50,130)*k,h:aro?rnd(170,280):rnd(15,40)})}
  updateFire(dt,k);
  // stars (10枚で自分の星が星座に、50枚で夜空が少し明るく)
@@ -326,6 +339,7 @@ function frame(now){
   mine.forEach((s,i)=>{const x=s.x*W,y=s.y*H;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()}
  if(burned>=50){const g2=ctx.createLinearGradient(0,0,0,H*.5);g2.addColorStop(0,'rgba(170,190,255,.06)');g2.addColorStop(1,'rgba(170,190,255,0)');ctx.fillStyle=g2;ctx.fillRect(0,0,W,H*.5)}
  stars.forEach(s=>{const tw=.55+.45*Math.sin(T*1.8+s.p),r=(s.mine?3:2)*(.7+.5*tw)*(1+Math.min(1.5,(likes[s.id]||0)*.2))*(burned>=50?1.25:1);
+  if(LIGHT){ctx.fillStyle=s.mine?`rgba(255,190,110,${.8*tw*SA})`:`rgba(220,230,255,${.55*tw*SA})`;ctx.beginPath();ctx.arc(s.x*W,s.y*H,r,0,7);ctx.fill();return}
   ctx.globalCompositeOperation='lighter';
   const g=ctx.createRadialGradient(s.x*W,s.y*H,0,s.x*W,s.y*H,r*5);
   g.addColorStop(0,s.mine?`rgba(255,190,110,${.8*tw*SA})`:`rgba(220,230,255,${.55*tw*SA})`);g.addColorStop(1,'rgba(0,0,0,0)');
@@ -352,7 +366,7 @@ function frame(now){
   ctx.closePath();
   const wg=ctx.createLinearGradient(0,-ph/2,0,ph/2);
   wg.addColorStop(0,'#f7ecd2');wg.addColorStop(.6,'#f0ddb0');wg.addColorStop(1,'#e6cb90');
-  ctx.fillStyle=wg;ctx.shadowColor=p>0?'rgba(255,120,30,.9)':'transparent';ctx.shadowBlur=p*30;
+  ctx.fillStyle=wg;ctx.shadowColor=p>0?'rgba(255,120,30,.9)':'transparent';ctx.shadowBlur=LIGHT?0:p*30;
   ctx.fill();ctx.shadowBlur=0;
   // string loop (above the paper, not clipped)
   ctx.strokeStyle='#b03a2e';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,-ph/2-7,5,Math.PI,0);ctx.stroke();
@@ -375,18 +389,18 @@ function frame(now){
   ctx.font='22px "Hiragino Mincho ProN","Yu Mincho",serif';ctx.textAlign='center';ctx.textBaseline='middle';
   const reveal=paper.t<HOLD?(paper.t/HOLD)*paper.chars.length:paper.chars.length;
   paper.chars.forEach((c,ci)=>{const cx=((L-1)/2-c.li)*28+c.dx,cy=(c.ci-(c.n-1)/2)*30+c.dy,q=(p-(c.th-.18))/.18;
-   if(c.gone){if(c.flash>0){ctx.save();ctx.translate(cx,cy);ctx.rotate(c.rot);ctx.globalAlpha=pa;ctx.fillStyle='#ffd76a';ctx.shadowColor='#ffb020';ctx.shadowBlur=22;ctx.fillText(paper.mask?'●':c.ch,0,0);ctx.restore();c.flash-=dt}return}
+   if(c.gone){if(c.flash>0){ctx.save();ctx.translate(cx,cy);ctx.rotate(c.rot);ctx.globalAlpha=pa;ctx.fillStyle='#ffd76a';ctx.shadowColor='#ffb020';ctx.shadowBlur=LIGHT?0:22;ctx.fillText(paper.mask?'●':c.ch,0,0);ctx.restore();c.flash-=dt}return}
    if(q>=1){c.gone=true;c.flash=.3;const cs=Math.cos(rot),sn=Math.sin(rot);for(let i=0;i<4;i++)ember(x+(cx*cs-cy*sn)*sc,y+(cx*sn+cy*cs)*sc,{h:rnd(20,45),vy:-rnd(30,90)*k});return}
    if(ci>=reveal)return;const ca=ci>reveal-1?Math.max(0,reveal-ci):1;
    ctx.save();ctx.translate(cx,cy);ctx.rotate(c.rot);
    if(q<0){ctx.save();ctx.globalAlpha=pa*ca*.3;ctx.font='23px "Hiragino Mincho ProN","Yu Mincho",serif';ctx.fillStyle='#2a1a0c';ctx.fillText(paper.mask?'●':c.ch,0,0);ctx.restore();
     ctx.save();ctx.globalAlpha=pa*ca;ctx.fillStyle='#2a1a0c';ctx.shadowBlur=0;ctx.fillText(paper.mask?'●':c.ch,0,0);ctx.restore()}
-   else{ctx.save();ctx.globalAlpha=pa*ca;ctx.fillStyle=`rgb(255,${Math.round(190-q*100)},60)`;ctx.shadowColor='#ff7a1a';ctx.shadowBlur=16;ctx.fillText(paper.mask?'●':c.ch,0,0);ctx.restore()}
+   else{ctx.save();ctx.globalAlpha=pa*ca;ctx.fillStyle=`rgb(255,${Math.round(190-q*100)},60)`;ctx.shadowColor='#ff7a1a';ctx.shadowBlur=LIGHT?0:16;ctx.fillText(paper.mask?'●':c.ch,0,0);ctx.restore()}
    ctx.restore()});
   ctx.restore();ctx.restore();
   if(p>0&&p<1)for(let i=0;i<2;i++)ember(x+rnd(-80,80)*sc,y+rnd(-30,30)*sc,{h:rnd(15,40)});
-  if(p>=1){for(let i=0;i<40;i++)ember(x+rnd(-70,70),y+rnd(-20,20),{vy:-rnd(60,200)*k,vx:rnd(-40,40)});
-   for(let i=0;i<14;i++)ash.push({x:x+rnd(-60,60),y:y+rnd(-15,15),vx:rnd(-12,12),vy:-rnd(18,45),l:0,m:rnd(3,5),s:rnd(2,4.5),r:rnd(0,6),vr:rnd(-2,2),p:rnd(0,6)});
+  if(p>=1){for(let i=0;i<(LIGHT?12:40);i++)ember(x+rnd(-70,70),y+rnd(-20,20),{vy:-rnd(60,200)*k,vx:rnd(-40,40)});
+   for(let i=0;i<(LIGHT?8:14);i++)ash.push({x:x+rnd(-60,60),y:y+rnd(-15,15),vx:rnd(-12,12),vy:-rnd(18,45),l:0,m:rnd(3,5),s:rnd(2,4.5),r:rnd(0,6),vr:rnd(-2,2),p:rnd(0,6)});
    spirit={x0:x,y0:y,tx:rnd(.1,.9),ty:rnd(.05,.34),t:0,care:paper.care,text:paper.mask||paper.care?'●'.repeat(paper.text.length):paper.pub};paper=null}}
  // spirit rising to become a star
  if(spirit){spirit.t+=dt;const q=Math.min(1,spirit.t/2.6),e=1-Math.pow(1-q,3);

@@ -20,7 +20,7 @@ h1{margin:0;font-size:22px;letter-spacing:.3em;font-weight:600;text-shadow:0 0 1
 #go{background:var(--ember);color:#2a1100;border:0;border-radius:6px;padding:0 20px;font:inherit;font-size:16px;font-weight:700;letter-spacing:.1em}
 #go:disabled{opacity:.4}
 :focus-visible{outline:2px solid #fff;outline-offset:2px}
-#toast{position:fixed;left:50%;top:22%;transform:translateX(-50%);max-width:80%;padding:10px 18px;border-radius:20px;background:rgba(10,8,20,.75);border:1px solid rgba(255,200,140,.5);font-size:15px;letter-spacing:.08em;opacity:0;transition:opacity .4s;pointer-events:none;text-align:center}
+#toast{position:fixed;z-index:6;left:50%;top:22%;transform:translateX(-50%);max-width:80%;padding:10px 18px;border-radius:20px;background:rgba(10,8,20,.75);border:1px solid rgba(255,200,140,.5);font-size:15px;letter-spacing:.08em;opacity:0;transition:opacity .4s;pointer-events:none;text-align:center}
 #toast.on{opacity:1}
 #vid{position:fixed;inset:0;z-index:5;background:rgba(5,6,15,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px}
 #vid[hidden]{display:none}
@@ -167,9 +167,10 @@ function showVid(){$('go').disabled=false;if(!vblob||vblob.size<1000)return;
 $('cl').onclick=()=>{$('vid').hidden=true;$('pv').pause()};
 $('sv').onclick=async()=>{
  const ext=vblob&&vblob.type.includes('mp4')?'mp4':'webm';
- try{if(!window.claude)throw 0;const d=await claude.use('downloads');if(!d)throw 0;
-  await d.save({filename:'burn-night.'+ext,data:vblob});$('vm').textContent='保存したよ'}
- catch(e){$('vm').textContent=(e&&e.code==='declined')?'保存をやめたよ':'保存できなかった。動画を長押しして保存してね'}};
+ if(window.claude){try{const d=await claude.use('downloads');if(!d)throw 0;
+  await d.save({filename:'burn-night.'+ext,data:vblob});$('vm').textContent='保存したよ';return}
+  catch(e){if(e&&e.code==='declined'){$('vm').textContent='保存をやめたよ';return}}}
+ const a=document.createElement('a');a.href=vurl;a.download='burn-night.'+ext;document.body.appendChild(a);a.click();a.remove();$('vm').textContent='保存したよ'};
 // fire & wood
 const WOOD={twig:{n:'🌿 枝',pw:.32,dur:22,ramp:1,max:9,gain:9},log:{n:'🪵 薪',pw:.3,dur:65,ramp:3,max:9,gain:28},big:{n:'🌲 丸太',pw:.26,dur:170,ramp:6,max:5,gain:80},aroma:{n:'🪻 香木',pw:.22,dur:50,ramp:2,max:3,gain:120,a:1}};
 const NL=150;let SA=1,nm={on:false,fin:false,t:0,words:[],burn:0,wood:0,maxHeat:0,rec:false,sum:null},aro=false,heat=.6,pieces=[{pw:.6,dur:60,age:5,ramp:1}],inv={twig:5,log:3,big:1,aroma:1},flying=[],fl=[],gt={twig:0,log:0,big:0,aroma:0},lowT=0;
@@ -330,7 +331,7 @@ function frame(now){
   g.addColorStop(0,s.mine?`rgba(255,190,110,${.8*tw*SA})`:`rgba(220,230,255,${.55*tw*SA})`);g.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=g;ctx.fillRect(s.x*W-r*5,s.y*H-r*5,r*10,r*10);ctx.globalCompositeOperation='source-over'});
  // paper (tanzaku: hand-torn washi slip, draggable)
- if(paper){if(!paper.drag)paper.t+=dt;const[fx,fy]=P(CFG.fireX,CFG.fireTarget);let x,y,sc,rot,p=0;
+ if(paper){if(!paper.drag&&!paper.back)paper.t+=dt;const[fx,fy]=P(CFG.fireX,CFG.fireTarget);let x,y,sc,rot,p=0;
   const HOLD=1.4,FLY=1.2,BURN=(2.8+paper.text.length*.1)/(.45+Math.min(1,heat)*.8);
   if(paper.t<HOLD){
    if(paper.drag){x=paper.px;y=paper.py}
@@ -356,7 +357,12 @@ function frame(now){
   // string loop (above the paper, not clipped)
   ctx.strokeStyle='#b03a2e';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,-ph/2-7,5,Math.PI,0);ctx.stroke();
   ctx.beginPath();ctx.moveTo(-5,-ph/2-7);ctx.lineTo(-9,-ph/2-16);ctx.moveTo(5,-ph/2-7);ctx.lineTo(9,-ph/2-16);ctx.stroke();
-  ctx.save();ctx.clip();
+  ctx.save();ctx.beginPath();
+  for(let i=0;i<=8;i++)ctx[i?'lineTo':'moveTo'](-pw/2+i*pw/8,-ph/2+E.t[i]);
+  for(let i=0;i<=8;i++)ctx.lineTo(pw/2+E.r[i],-ph/2+i*ph/8);
+  for(let i=0;i<=8;i++)ctx.lineTo(pw/2-i*pw/8,ph/2+E.b[i]);
+  for(let i=0;i<=8;i++)ctx.lineTo(-pw/2+E.l[i],ph/2-i*ph/8);
+  ctx.closePath();ctx.clip();
   if(p>0){ctx.fillStyle=`rgba(40,20,8,${Math.min(.85,p*1.1)})`;ctx.fillRect(-pw/2,-ph/2,pw,ph)}
   // washi fibres
   paper.fibers.forEach(f=>{if(f.dot){ctx.fillStyle=`rgba(120,90,40,${f.a})`;ctx.fillRect(f.x,f.y,1.4,1.4)}
@@ -389,7 +395,7 @@ function frame(now){
   g.addColorStop(0,'rgba(255,220,150,.95)');g.addColorStop(1,'rgba(255,120,30,0)');ctx.fillStyle=g;ctx.fillRect(x-22,y-22,44,44);ctx.globalCompositeOperation='source-over';
   ember(x,y,{vx:rnd(-8,8),vy:rnd(5,20),m:.8,s:1.5});
   if(q>=1){nightLog(spirit.text);saveMine({x:spirit.tx,y:spirit.ty,t:spirit.text});
-   toast(spirit.care?'つらいときは、ひとりで抱えないで。よりそいホットライン 0120-279-338（24時間・無料）':'「'+spirit.text+'」は星になった',spirit.care?9000:2600);
+   toast('「'+spirit.text+'」は星になった',2600);
    if(!spirit.care&&burned>=10&&!c10){c10=true;setTimeout(()=>toast('空に小さな星座ができた',3000),3200)}
    if(!spirit.care&&burned>=50&&!c50){c50=true;setTimeout(()=>toast('夜空が少し明るくなった',3000),3200)}
    spirit=null;if(rec&&nm.on&&nm.rec)$('go').disabled=false;else if(rec)setTimeout(stopRec,3500);else $('go').disabled=false}}

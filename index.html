@@ -71,7 +71,7 @@ h1{margin:0;font-size:22px;letter-spacing:.3em;font-weight:600;text-shadow:0 0 1
 #intro .village a{color:var(--fg);text-decoration:underline;text-underline-offset:3px}
 #intro .free{display:inline-block;font-size:13px;letter-spacing:.18em;line-height:1.6;margin:2px 0 0;padding:5px 16px;border:1px solid rgba(255,216,140,.55);border-radius:999px;color:#ffe6ae;opacity:1}
 #intro #lgbI{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:16px;min-width:0;padding:8px 12px;margin:0}
-#bkv{pointer-events:auto;display:inline-block;margin-top:6px;font-size:12px;opacity:.75;color:var(--fg);text-decoration:none;background:rgba(0,0,0,.35);border:1px solid rgba(255,200,140,.3);border-radius:14px;padding:4px 10px}
+#bkv,#psv{pointer-events:auto;display:inline-block;margin-top:6px;font-size:12px;opacity:.75;color:var(--fg);text-decoration:none;background:rgba(0,0,0,.35);border:1px solid rgba(255,200,140,.3);border-radius:14px;padding:4px 10px}
 .rl2{display:flex;align-items:center;gap:4px;font-size:12px;opacity:.85;white-space:nowrap}
 #wd{position:fixed;left:0;right:0;bottom:calc(88px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;align-items:center;padding:0 14px}
 #hb{flex:1;min-width:30px;height:8px;border-radius:4px;background:rgba(255,255,255,.18);overflow:hidden}
@@ -100,11 +100,11 @@ h1{margin:0;font-size:22px;letter-spacing:.3em;font-weight:600;text-shadow:0 0 1
 </style></head><body>
 <canvas id="c"></canvas>
 <div id="dim" hidden></div>
-<div id="top"><div><h1>Burn Night</h1><p id="sub">手放したいことを書いて、火にくべよう</p><a id="bkv" href="https://punioasis-9mmhfbw2.manus.game">🏕️ 村に戻る</a></div>
-<div><div id="cnt"></div><div id="bs"><button id="wxb" class="mb"></button><button id="tmb" class="mb"></button><button id="nb" class="mb">🌙 一晩</button><button id="snd" class="mb" aria-label="音">🔇 音</button><button id="ltb" class="mb">🍃 軽い</button><button id="slb" class="mb">🌙 おやすみ</button><button id="stb" class="mb">📺 配信</button><button id="lgb" class="mb">🌐 日本語</button></div></div></div>
+<div id="top"><div><h1>Burn Night</h1><p id="sub">手放したいことを書いて、火にくべよう</p><a id="bkv" href="https://punioasis-9mmhfbw2.manus.game">🏕️ 村に戻る</a> <a id="psv" href="https://punisurvivor-aetsview.manus.space/">🎮 ぷにサバイバー</a></div>
+<div><div id="cnt"></div><div id="bs"><button id="wxb" class="mb"></button><button id="tmb" class="mb"></button><button id="nb" class="mb">🌙 一晩</button><button id="snd" class="mb" aria-label="音">🔇 音</button><button id="ltb" class="mb">🍃 軽い</button><button id="slb" class="mb">🌙 おやすみ</button><button id="stb" class="mb">📺 配信</button><button id="lgb" class="mb">🌐 日本語</button><button id="skyBtn" class="mb" aria-label="空の写真">📸</button></div></div></div>
 <div id="toast"></div>
 <div id="mg" hidden><div id="mgf"><iframe id="mgv" title="live" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" frameborder="0"></iframe><img id="mgi" alt=""></div><div id="mgc"><span id="mgn"></span><span id="mgl"></span></div><button id="mgx" aria-label="閉じる">✕</button></div>
-<div id="intro"><button id="lgbI" class="mb">🌐 日本語</button><div><h2>Burn Night</h2><p id="ip">手放したいことを紙に書いて、<br>火にくべよう。<br>灰は星になって、夜空に残る。</p><button id="i1" class="nbtn">🔊 音ありで始める</button><button id="i2" class="nbtn sub">音なしで始める</button><button id="i3" class="nbtn sub">🍃 軽いモードで始める</button><p class="free" id="fre">無料で遊べます</p><p class="terms" id="trm">燃やした言葉は、この端末の夜空にだけ星として残ります。ほかの人と共有されることはありません。</p><p class="village"><a id="bkvI" href="https://punioasis-9mmhfbw2.manus.game">ぷにたちのオアシス村に戻る</a></p></div></div>
+<div id="intro"><button id="lgbI" class="mb">🌐 日本語</button><div><h2>Burn Night</h2><p id="ip">手放したいことを紙に書いて、<br>火にくべよう。<br>灰は星になって、夜空に残る。</p><button id="i1" class="nbtn">🔊 音ありで始める</button><button id="i2" class="nbtn sub">音なしで始める</button><button id="i3" class="nbtn sub">🍃 軽いモードで始める</button><p class="free" id="fre">無料で遊べます</p><p class="terms" id="trm">燃やした言葉は、この端末の夜空にだけ星として残ります。ほかの人と共有されることはありません。</p><p class="village"><a id="bkvI" href="https://punioasis-9mmhfbw2.manus.game">ぷにたちのオアシス村に戻る</a></p><p class="village"><a id="psvI" href="https://punisurvivor-aetsview.manus.space/">ぷにサバイバーで遊ぶ</a></p></div></div>
 <div id="nr" hidden><h2 id="nrH">夜が明けた</h2><p id="nt"></p><p id="nw"></p><div><button id="n1" class="nbtn">もう一晩</button><button id="n2" class="nbtn sub">閉じる</button></div></div>
 <div id="sc" hidden><span id="st"></span><button id="lk" hidden></button><button id="rp" hidden>🚩</button></div>
 <div id="vid" hidden><video id="pv" playsinline loop muted autoplay></video><div id="vb"><button id="shr" class="nbtn">共有</button><button id="sv">動画を保存</button><button id="cl">閉じる</button></div><p id="vm"></p></div>
@@ -129,7 +129,9 @@ intro:'手放したいことを紙に書いて、<br>火にくべよう。<br>�
 i1:'🔊 音ありで始める',i2:'音なしで始める',i3:'🍃 軽いモードで始める',
 terms:'燃やした言葉は、この端末の夜空にだけ星として残ります。ほかの人と共有されることはありません。',
 freeToPlay:'無料で遊べます',
+skyPhoto:'空の写真',skyPhotoShared:'空の写真を共有したよ',skyPhotoSaved:'空の写真を保存したよ',skyPhotoFailed:'写真が撮れなかったよ',
 village:'ぷにたちのオアシス村に戻る',villageShort:'🏕️ 村に戻る',
+puniSurvivor:'ぷにサバイバーで遊ぶ',puniSurvivorShort:'🎮 ぷにサバイバー',
 dawn:'夜が明けた',again:'もう一晩',close:'閉じる',share:'共有',save:'動画を保存',
 cnt1:'燃やした言葉　',cnt2:'<br>みんなの星　',cnt3:'<br>今夜で',cnt4:'夜目',
 letgo:'この言葉を、手放す',fireOut:'火が消えそう…灰の中の炭が赤く残っている',fireLow:'火が小さくなってきた。薪をくべよう',
@@ -157,7 +159,9 @@ intro:'Write down what you want to let go of,<br>and feed it to the fire.<br>The
 i1:'🔊 Start with sound',i2:'Start without sound',i3:'🍃 Start in light mode',
 terms:'The words you burn remain as stars in the night sky on this device only. They are never shared with anyone else.',
 freeToPlay:'Free to play',
+skyPhoto:'Sky photo',skyPhotoShared:'Shared a photo of the sky',skyPhotoSaved:'Saved a photo of the sky',skyPhotoFailed:'Couldn\'t take a photo',
 village:'Back to Puni Oasis Village',villageShort:'🏕️ Back to the village',
+puniSurvivor:'Play Puni Survivor',puniSurvivorShort:'🎮 Puni Survivor',
 dawn:'Dawn has come',again:'One more night',close:'Close',share:'Share',save:'Save video',
 cnt1:'Words burned ',cnt2:"<br>Everyone's stars ",cnt3:'<br>Night ',cnt4:'',
 letgo:'Let this word go',fireOut:'The fire is about to go out… a red ember remains in the ash',fireLow:'The fire is getting small. Feed it some wood.',
@@ -185,7 +189,9 @@ intro:'把想放下的事写在纸上，<br>放进火里。<br>灰烬化作星�
 i1:'🔊 有声开始',i2:'无声开始',i3:'🍃 轻量模式开始',
 terms:'你烧掉的话语，只会化作星星留在这台设备的夜空中，不会分享给任何人。',
 freeToPlay:'免费游玩',
+skyPhoto:'天空照片',skyPhotoShared:'已分享天空照片',skyPhotoSaved:'已保存天空照片',skyPhotoFailed:'拍照失败了',
 village:'回到普尼绿洲村',villageShort:'🏕️ 回村庄',
+puniSurvivor:'玩Puni Survivor',puniSurvivorShort:'🎮 Puni Survivor',
 dawn:'天亮了',again:'再过一夜',close:'关闭',share:'分享',save:'保存视频',
 cnt1:'烧掉的话语　',cnt2:'<br>大家的星星　',cnt3:'<br>今晚是第',cnt4:'夜',
 letgo:'放下这句话',fireOut:'火快要熄灭了……灰烬中还留着红红的炭',fireLow:'火变小了。添些柴吧。',
@@ -228,7 +234,7 @@ function applyLang(){
  $('i1').textContent=TR('i1');$('i2').textContent=TR('i2');$('i3').textContent=TR('i3');
  $('trm').textContent=TR('terms');
  $('fre').textContent=TR('freeToPlay');
- $('bkvI').textContent=TR('village');$('bkv').textContent=TR('villageShort');
+ $('bkvI').textContent=TR('village');$('bkv').textContent=TR('villageShort');$('psvI').textContent=TR('puniSurvivor');$('psv').textContent=TR('puniSurvivorShort');
  $('nrH').textContent=TR('dawn');
  $('n1').textContent=TR('again');$('n2').textContent=TR('close');
  $('shr').textContent=TR('share');$('sv').textContent=TR('save');$('cl').textContent=TR('close');
@@ -238,6 +244,7 @@ function applyLang(){
  $('stT').placeholder=TR('ph')+tonight()+TR('phEnd');
  $('stGo').textContent=TR('go');
  $('stExit').setAttribute('aria-label',TR('streamExit'));
+ $('skyBtn').title=TR('skyPhoto');$('skyBtn').setAttribute('aria-label',TR('skyPhoto'));
  $('snd').textContent=on?TR('sndOn'):TR('sndOff');
  $('nb').textContent=nm.on?'🌙 '+Math.floor(Math.min(1,nm.t/NL)*100)+'%':TR('night');
  $('wxb').textContent=TR('wx')[wx];
@@ -955,6 +962,48 @@ $('shr').onclick=async()=>{if(!vblob)return;const ext=vblob.type.includes('mp4')
   if(navigator.share){await navigator.share({text:'#BurnNight',url:location.href});return}
   $('vm').textContent=TR('shareNo')}
  catch(e){if(!e||e.name!=='AbortError')$('vm').textContent=TR('shareFail')}};
+// 空のスクショ共有：星空だけを写真にする。言葉（紙）は写らない
+// 紙が燃えている間は言葉が表示されるので、撮影するフレームだけ紙の描画を隠す。
+// 撮影は frame() の描画直後（skyShotDone）に行い、紙なしの1枚を確実に撮る。
+// 写真はゲーム内の保存・共有で、TikTokの配信画面にURLやQRコードを出すものではない。
+let hidePaper=false,skyShotPending=false;
+function takeSkyPhoto(){
+ if(skyShotPending)return; // 撮影中は二重起動しない
+ skyShotPending=true;hidePaper=true;
+}
+function skyShotDone(){skyShotPending=false;hidePaper=false;finishSkyPhoto()}
+function finishSkyPhoto(){
+ try{
+  cv.toBlob(b=>{
+   if(!b){toast(TR('skyPhotoFailed'));return}
+   shareSkyPhoto(b);
+  },'image/png');
+ }catch(e){toast(TR('skyPhotoFailed'))}
+}
+async function shareSkyPhoto(blob){
+ try{
+  const f=new File([blob],'burn-night-sky.png',{type:'image/png'});
+  if(navigator.canShare&&navigator.canShare({files:[f]})){
+   try{
+    await navigator.share({files:[f]});
+    toast(TR('skyPhotoShared'));
+    return;
+   }catch(e){
+    if(e&&e.name==='AbortError')return; // ユーザーが共有をやめた（ダウンロードはしない）
+   }
+  }
+ }catch(e){
+  // FileやcanShareが使えないときはダウンロードに切り替える
+ }
+ try{
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='burn-night-sky.png';
+  document.body.appendChild(a);a.click();a.remove();
+  toast(TR('skyPhotoSaved'));
+ }catch(e){toast(TR('skyPhotoFailed'))}
+}
+$('skyBtn').onclick=()=>takeSkyPhoto();
 let mt=null,mtT=rnd(4,10),leoToast=false,gemToast=false;
 // しし座流星群の夜（11月17日18時〜18日6時）とふたご座流星群の夜（12月14日18時〜15日6時）にだけ流星が流れる
 function isLeonidNight(){const d=new Date();if(d.getMonth()!==10)return false;const dd=d.getDate(),h=d.getHours();return (dd===17&&h>=18)||(dd===18&&h<6)}
@@ -1148,7 +1197,7 @@ function frame(now){
   g.addColorStop(0,s.mine?`rgba(255,190,110,${.8*tw*SA})`:`rgba(220,230,255,${.55*tw*SA})`);g.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=g;ctx.fillRect(s.x*W-r*5,s.y*H-r*5,r*10,r*10);ctx.globalCompositeOperation='source-over'});
  // paper (tanzaku: hand-torn washi slip, draggable)
- if(paper){if(!paper.drag&&!paper.back)paper.t+=dt;const[fx,fy]=P(CFG.fireX,CFG.fireTarget);let x,y,sc,rot,p=0;
+ if(paper&&!hidePaper){if(!paper.drag&&!paper.back)paper.t+=dt;const[fx,fy]=P(CFG.fireX,CFG.fireTarget);let x,y,sc,rot,p=0;
   const HOLD=1.4,FLY=1.2,BURN=(2.8+paper.text.length*.1)/(.45+Math.min(1,heat)*.8);
   if(paper.t<HOLD){
    if(paper.drag){x=paper.px;y=paper.py}
@@ -1232,6 +1281,7 @@ function frame(now){
   rctx.drawImage(cv,cx*d,cy*d,cw*d,ch*d,0,0,720,1280);
   if(nm.sum){rctx.fillStyle='rgba(5,6,15,.55)';rctx.fillRect(0,0,720,1280);rctx.fillStyle='#ffe9cf';rctx.textAlign='center';rctx.font='600 54px serif';rctx.fillText(TR('dawn'),360,430);rctx.font='34px serif';nm.sum.forEach((l,i)=>rctx.fillText(l,360,520+i*58))}
   rctx.fillStyle='rgba(0,0,0,.35)';rctx.fillRect(0,1170,720,110);rctx.fillStyle='#ffe9cf';rctx.font='600 36px serif';rctx.textAlign='center';rctx.fillText('Burn Night',360,1236)}
+ if(skyShotPending)skyShotDone() // 空の写真：紙なしで描いた直後にキャンバスを撮る
  requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
 (async()=>{try{

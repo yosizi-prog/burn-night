@@ -93,7 +93,7 @@ village:'ぷにたちのオアシス村に戻る',villageShort:'🏕️ 村に�
 dawn:'夜が明けた',again:'もう一晩',close:'閉じる',share:'共有',save:'動画を保存',
 cnt1:'燃やした言葉　',cnt2:'<br>みんなの星　',cnt3:'<br>今夜で',cnt4:'夜目',
 letgo:'この言葉を、手放す',fireOut:'火が消えそう…灰の中の炭が赤く残っている',fireLow:'火が小さくなってきた。薪をくべよう',
-becameStar:'「{t}」は星になった',constellation:'空に小さな星座ができた',brighter:'夜空が少し明るくなった',leonid:'今夜はしし座流星群の夜',
+becameStar:'「{t}」は星になった',constellation:'空に小さな星座ができた',brighter:'夜空が少し明るくなった',leonid:'今夜はしし座流星群の夜',geminid:'今夜はふたご座流星群の夜',
 nightStart:'一晩が始まった。夜明けまでに、燃やしたいものを燃やそう',
 sumBurn:'燃やした言葉　',sumWood:'くべた薪　',sumHeat:'いちばん強い火　',burnedWords:'燃やした言葉：',sep:'、',
 lightOn:'軽いモードにしたよ。火は少しおとなしくなるけど、スマホは熱くなりにくいよ',lightOff:'通常モードに戻したよ',
@@ -115,7 +115,7 @@ village:'Back to Puni Oasis Village',villageShort:'🏕️ Back to the village',
 dawn:'Dawn has come',again:'One more night',close:'Close',share:'Share',save:'Save video',
 cnt1:'Words burned ',cnt2:"<br>Everyone's stars ",cnt3:'<br>Night ',cnt4:'',
 letgo:'Let this word go',fireOut:'The fire is about to go out… a red ember remains in the ash',fireLow:'The fire is getting small. Feed it some wood.',
-becameStar:'"{t}" became a star',constellation:'A small constellation appeared in the sky',brighter:'The night sky grew a little brighter',leonid:'Tonight is the Leonid meteor shower',
+becameStar:'"{t}" became a star',constellation:'A small constellation appeared in the sky',brighter:'The night sky grew a little brighter',leonid:'Tonight is the Leonid meteor shower',geminid:'Tonight is the Geminid meteor shower',
 nightStart:'The night has begun. Burn what you want to let go of before dawn.',
 sumBurn:'Words burned ',sumWood:'Wood fed ',sumHeat:'Strongest fire ',burnedWords:'Words burned: ',sep:', ',
 lightOn:'Light mode on. The fire is a little quieter, but your phone will stay cooler.',lightOff:'Back to normal mode.',
@@ -137,7 +137,7 @@ village:'回到普尼绿洲村',villageShort:'🏕️ 回村庄',
 dawn:'天亮了',again:'再过一夜',close:'关闭',share:'分享',save:'保存视频',
 cnt1:'烧掉的话语　',cnt2:'<br>大家的星星　',cnt3:'<br>今晚是第',cnt4:'夜',
 letgo:'放下这句话',fireOut:'火快要熄灭了……灰烬中还留着红红的炭',fireLow:'火变小了。添些柴吧。',
-becameStar:'「{t}」变成了星星',constellation:'天空中出现了一个小小的星座',brighter:'夜空变得稍微明亮了一点',leonid:'今晚是狮子座流星雨之夜',
+becameStar:'「{t}」变成了星星',constellation:'天空中出现了一个小小的星座',brighter:'夜空变得稍微明亮了一点',leonid:'今晚是狮子座流星雨之夜',geminid:'今晚是双子座流星雨之夜',
 nightStart:'一夜开始了。在天亮之前，把想放下的都烧掉吧。',
 sumBurn:'烧掉的话语　',sumWood:'添的柴　',sumHeat:'最旺的火　',burnedWords:'烧掉的话语：',sep:'、',
 lightOn:'已切换到轻量模式。火会安静一点，但手机不容易发烫。',lightOff:'已回到普通模式。',
@@ -371,11 +371,12 @@ $('shr').onclick=async()=>{if(!vblob)return;const ext=vblob.type.includes('mp4')
   if(navigator.share){await navigator.share({text:'#BurnNight',url:location.href});return}
   $('vm').textContent=TR('shareNo')}
  catch(e){if(!e||e.name!=='AbortError')$('vm').textContent=TR('shareFail')}};
-let mt=null,mtT=rnd(4,10),leoToast=false;
-// しし座流星群の夜（11月17日18時〜18日6時）にだけ流星が流れる
+let mt=null,mtT=rnd(4,10),leoToast=false,gemToast=false;
+// しし座流星群の夜（11月17日18時〜18日6時）とふたご座流星群の夜（12月14日18時〜15日6時）にだけ流星が流れる
 function isLeonidNight(){const d=new Date();if(d.getMonth()!==10)return false;const dd=d.getDate(),h=d.getHours();return (dd===17&&h>=18)||(dd===18&&h<6)}
-function meteor(dt){if(!isLeonidNight()||nm.on&&nm.t/NL>.85)return;mtT-=dt;
- if(!mt&&mtT<=0){mt={x:rnd(.35,1)*W,y:rnd(.05,.22)*H,l:0};mtT=rnd(6,14);if(!leoToast){leoToast=true;toast(TR('leonid'),4000)}}
+function isGeminidNight(){const d=new Date();if(d.getMonth()!==11)return false;const dd=d.getDate(),h=d.getHours();return (dd===14&&h>=18)||(dd===15&&h<6)}
+function meteor(dt){const gem=isGeminidNight();if(!(isLeonidNight()||gem)||nm.on&&nm.t/NL>.85)return;mtT-=dt;
+ if(!mt&&mtT<=0){mt={x:rnd(.35,1)*W,y:rnd(.05,.22)*H,l:0};mtT=rnd(6,14);if(gem){if(!gemToast){gemToast=true;toast(TR('geminid'),4000)}}else if(!leoToast){leoToast=true;toast(TR('leonid'),4000)}}
  if(mt){mt.l+=dt;const q=mt.l/1.1;if(q>=1){mt=null;return}
   const x=mt.x-q*W*.45,y=mt.y+q*H*.16,tx=x+W*.12,ty=y-H*.035,g=ctx.createLinearGradient(x,y,tx,ty);
   g.addColorStop(0,`rgba(255,255,255,${1-q})`);g.addColorStop(1,'rgba(255,255,255,0)');

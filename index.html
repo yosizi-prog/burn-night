@@ -572,9 +572,9 @@ let fishT=60; // 釣りのタイマー（最初の1匹は60秒、その後は60�
 let puni={st:'wait',t:0,x:0,y:0,fx:0,fy:0}; // st: wait(待つ)/bite(食いつく)/reel(巻き上げる)/deliver(届ける)/back(戻る)
 let fish={sp:null,st:'none',grill:0,x:0,y:0}; // st: none/plate(板の上)/grill(焼き中)/grilled(焼けた)
 let pondRip=[],fsteam=[];
-function pondPos(){return[W*.5,H*.60]}
-function puniSpot(){return[W*.20,H*.62]}
-function bobberPos(){return[W*.48,H*.60]}
+function pondPos(){return[W*.36,H*.62]}
+function puniSpot(){const[px,py]=pondPos();return[px-W*.18,py+H*.015]} // ぷには池の左の縁に座る（池に連動）
+function bobberPos(){const[px,py]=pondPos();return[px+W*.02,py]} // 浮きは池の水面に
 function platePos(){const[fx,fy]=P(CFG.fireX,CFG.fireBase);return[fx+W*.26,fy+4]}
 function skewerPos(){const[fx,fy]=P(CFG.fireX,CFG.fireBase);return[fx,fy-26]}
 function sizzlePop(){
@@ -624,27 +624,40 @@ function updateFish(dt){
  if(sGain)sGain.gain.value=on&&fish.st==='grill'?.10*volF():0;
 }
 function drawPond(dt,k){
- const[px,py]=pondPos(),rw=W*.275,rh=24*k;
+ const[px,py]=pondPos(),rw=W*.17,rh=22*k;
  ctx.save();
- const g=ctx.createLinearGradient(px,py-rh,px,py+rh);
- g.addColorStop(0,'#0e1a2e');g.addColorStop(.5,'#0a1424');g.addColorStop(1,'#070d1a');
- ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(px,py,rw,rh,0,0,7);ctx.fill();
- // 月明かりの映り込み（縦の光の帯、ゆらゆら）
+ // 池の形：すこし傾いた楕円＋右側の小さなふくらみ（完璧な楕円にしない）。
+ // 柔らかい縁：放射グラデーションで縁をぼかし、下の背景がほんのり透ける（貼り付けた黒い楕円に見えないように）
+ ctx.save();ctx.translate(px,py);ctx.rotate(-.05);
+ const pondFill=(cx,cy,rx,ry)=>{
+  ctx.save();ctx.translate(cx,cy);ctx.scale(rx,ry);
+  const g=ctx.createRadialGradient(0,0,0,0,0,1);
+  g.addColorStop(0,'rgba(16,28,48,.80)');
+  g.addColorStop(.68,'rgba(13,23,40,.76)');
+  g.addColorStop(.9,'rgba(11,19,34,.28)');
+  g.addColorStop(1,'rgba(11,19,34,0)');
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,1,0,7);ctx.fill();
+  ctx.restore();
+ };
+ pondFill(0,0,rw,rh);
+ pondFill(rw*.55,rh*.1,rw*.6,rh*.65); // 右側の小さなふくらみ
+ // 月明かりの映り込み（縦の光の帯、ゆらゆら、ほんのり）
  ctx.globalCompositeOperation='lighter';
- const mg=ctx.createLinearGradient(px,py-rh,px,py+rh);
- mg.addColorStop(0,'rgba(200,215,255,0)');mg.addColorStop(.5,`rgba(200,215,255,${.10+.04*Math.sin(T*.8)})`);mg.addColorStop(1,'rgba(200,215,255,0)');
- ctx.fillStyle=mg;ctx.beginPath();ctx.ellipse(px,py,rw*.35,rh*.8,0,0,7);ctx.fill();
+ const mg=ctx.createLinearGradient(0,-rh,0,rh);
+ mg.addColorStop(0,'rgba(200,215,255,0)');mg.addColorStop(.5,`rgba(200,215,255,${.08+.03*Math.sin(T*.8)})`);mg.addColorStop(1,'rgba(200,215,255,0)');
+ ctx.fillStyle=mg;ctx.beginPath();ctx.ellipse(0,0,rw*.32,rh*.75,0,0,7);ctx.fill();
  ctx.globalCompositeOperation='source-over';
  // 火の明かりの映り込み（池の下の縁、ほんのり暖かい）
- const fg=ctx.createLinearGradient(px,py,px,py+rh);
- fg.addColorStop(0,'rgba(255,140,50,0)');fg.addColorStop(1,`rgba(255,140,50,${.10*heat+.03})`);
- ctx.fillStyle=fg;ctx.beginPath();ctx.ellipse(px,py,rw*.9,rh*.9,0,0,7);ctx.fill();
- // さざ波の輪
+ const fg=ctx.createLinearGradient(0,0,0,rh);
+ fg.addColorStop(0,'rgba(255,140,50,0)');fg.addColorStop(1,`rgba(255,140,50,${.08*heat+.02})`);
+ ctx.fillStyle=fg;ctx.beginPath();ctx.ellipse(0,0,rw*.85,rh*.85,0,0,7);ctx.fill();
+ ctx.restore();
+ // さざ波の輪（控えめ）
  pondRip=pondRip.filter(r=>{r.l+=dt;if(r.l>r.m)return false;const q=r.l/r.m;r.r+=18*dt;
-  ctx.strokeStyle=`rgba(180,200,240,${.35*(1-q)})`;ctx.lineWidth=1;
+  ctx.strokeStyle=`rgba(180,200,240,${.25*(1-q)})`;ctx.lineWidth=1;
   ctx.beginPath();ctx.ellipse(r.x,r.y,r.r,r.r*.35,0,0,7);ctx.stroke();return true});
  ctx.restore();
- if(Math.random()<dt*.5)pondRip.push({x:px+rnd(-rw*.7,rw*.7),y:py+rnd(-rh*.5,rh*.5),r:2,l:0,m:rnd(.8,1.5)});
+ if(Math.random()<dt*.35)pondRip.push({x:px+rnd(-rw*.7,rw*.7),y:py+rnd(-rh*.5,rh*.5),r:2,l:0,m:rnd(.8,1.5)});
 }
 function drawFishShape(x,y,sp,q,k){
  // q: 0=生、1=きつね色（焼けた）。魚種の色からきつね色へなめらかに変わる

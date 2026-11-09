@@ -93,7 +93,7 @@ village:'ぷにたちのオアシス村に戻る',villageShort:'🏕️ 村に�
 dawn:'夜が明けた',again:'もう一晩',close:'閉じる',share:'共有',save:'動画を保存',
 cnt1:'燃やした言葉　',cnt2:'<br>みんなの星　',cnt3:'<br>今夜で',cnt4:'夜目',
 letgo:'この言葉を、手放す',fireOut:'火が消えそう…灰の中の炭が赤く残っている',fireLow:'火が小さくなってきた。薪をくべよう',
-becameStar:'「{t}」は星になった',constellation:'空に小さな星座ができた',brighter:'夜空が少し明るくなった',leonid:'今夜はしし座流星群の夜',geminid:'今夜はふたご座流星群の夜',
+becameStar:'「{t}」は星になった',constellation:'空に小さな星座ができた',brighter:'夜空が少し明るくなった',leonid:'今夜はしし座流星群の夜',geminid:'今夜はふたご座流星群の夜',xmas:'今夜はクリスマスの夜',fullmoon:'今夜は満月の夜',
 nightStart:'一晩が始まった。夜明けまでに、燃やしたいものを燃やそう',
 sumBurn:'燃やした言葉　',sumWood:'くべた薪　',sumHeat:'いちばん強い火　',burnedWords:'燃やした言葉：',sep:'、',
 lightOn:'軽いモードにしたよ。火は少しおとなしくなるけど、スマホは熱くなりにくいよ',lightOff:'通常モードに戻したよ',
@@ -115,7 +115,7 @@ village:'Back to Puni Oasis Village',villageShort:'🏕️ Back to the village',
 dawn:'Dawn has come',again:'One more night',close:'Close',share:'Share',save:'Save video',
 cnt1:'Words burned ',cnt2:"<br>Everyone's stars ",cnt3:'<br>Night ',cnt4:'',
 letgo:'Let this word go',fireOut:'The fire is about to go out… a red ember remains in the ash',fireLow:'The fire is getting small. Feed it some wood.',
-becameStar:'"{t}" became a star',constellation:'A small constellation appeared in the sky',brighter:'The night sky grew a little brighter',leonid:'Tonight is the Leonid meteor shower',geminid:'Tonight is the Geminid meteor shower',
+becameStar:'"{t}" became a star',constellation:'A small constellation appeared in the sky',brighter:'The night sky grew a little brighter',leonid:'Tonight is the Leonid meteor shower',geminid:'Tonight is the Geminid meteor shower',xmas:'Tonight is Christmas night',fullmoon:'Tonight is a full moon night',
 nightStart:'The night has begun. Burn what you want to let go of before dawn.',
 sumBurn:'Words burned ',sumWood:'Wood fed ',sumHeat:'Strongest fire ',burnedWords:'Words burned: ',sep:', ',
 lightOn:'Light mode on. The fire is a little quieter, but your phone will stay cooler.',lightOff:'Back to normal mode.',
@@ -137,7 +137,7 @@ village:'回到普尼绿洲村',villageShort:'🏕️ 回村庄',
 dawn:'天亮了',again:'再过一夜',close:'关闭',share:'分享',save:'保存视频',
 cnt1:'烧掉的话语　',cnt2:'<br>大家的星星　',cnt3:'<br>今晚是第',cnt4:'夜',
 letgo:'放下这句话',fireOut:'火快要熄灭了……灰烬中还留着红红的炭',fireLow:'火变小了。添些柴吧。',
-becameStar:'「{t}」变成了星星',constellation:'天空中出现了一个小小的星座',brighter:'夜空变得稍微明亮了一点',leonid:'今晚是狮子座流星雨之夜',geminid:'今晚是双子座流星雨之夜',
+becameStar:'「{t}」变成了星星',constellation:'天空中出现了一个小小的星座',brighter:'夜空变得稍微明亮了一点',leonid:'今晚是狮子座流星雨之夜',geminid:'今晚是双子座流星雨之夜',xmas:'今晚是圣诞之夜',fullmoon:'今晚是满月之夜',
 nightStart:'一夜开始了。在天亮之前，把想放下的都烧掉吧。',
 sumBurn:'烧掉的话语　',sumWood:'添的柴　',sumHeat:'最旺的火　',burnedWords:'烧掉的话语：',sep:'、',
 lightOn:'已切换到轻量模式。火会安静一点，但手机不容易发烫。',lightOff:'已回到普通模式。',
@@ -381,6 +381,49 @@ function meteor(dt){const gem=isGeminidNight();if(!(isLeonidNight()||gem)||nm.on
   const x=mt.x-q*W*.45,y=mt.y+q*H*.16,tx=x+W*.12,ty=y-H*.035,g=ctx.createLinearGradient(x,y,tx,ty);
   g.addColorStop(0,`rgba(255,255,255,${1-q})`);g.addColorStop(1,'rgba(255,255,255,0)');
   ctx.save();ctx.globalCompositeOperation='lighter';ctx.strokeStyle=g;ctx.lineWidth=2;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(tx,ty);ctx.stroke();ctx.restore()}}
+// クリスマスの夜（12月24日18時〜25日6時）：雪が降り、空に大きな星が光る
+function isChristmasNight(){const d=new Date();if(d.getMonth()!==11)return false;const dd=d.getDate(),h=d.getHours();return (dd===24&&h>=18)||(dd===25&&h<6)}
+let xwp=[],xmasToast=false;
+function drawXmas(dt,k){
+ if(!isChristmasNight())return;
+ if(!xmasToast){xmasToast=true;toast(TR('xmas'),4000)}
+ const n=LIGHT?20:45;
+ while(xwp.length<n)xwp.push({x:rnd(0,W),y:rnd(-H,0),v:rnd(25,55),r:rnd(1.5,3),s:rnd(0,6)});
+ ctx.save();ctx.fillStyle='rgba(255,255,255,.9)';
+ xwp.forEach(d=>{d.y+=d.v*dt*k;d.x+=Math.sin(T*.7+d.s)*15*dt;if(d.y>H){d.y=rnd(-30,0);d.x=rnd(0,W)}ctx.beginPath();ctx.arc(d.x,d.y,d.r*k*.9,0,7);ctx.fill()});
+ ctx.restore();
+ const sx=W*.8,sy=H*.16,tw=.7+.3*Math.sin(T*1.5);
+ ctx.save();ctx.globalCompositeOperation='lighter';
+ const g=ctx.createRadialGradient(sx,sy,0,sx,sy,60*k);
+ g.addColorStop(0,`rgba(255,240,200,${.9*tw})`);g.addColorStop(1,'rgba(255,240,200,0)');
+ ctx.fillStyle=g;ctx.fillRect(sx-60*k,sy-60*k,120*k,120*k);
+ ctx.strokeStyle=`rgba(255,250,230,${.9*tw})`;ctx.lineWidth=2;
+ ctx.beginPath();ctx.moveTo(sx-14*k,sy);ctx.lineTo(sx+14*k,sy);ctx.moveTo(sx,sy-14*k);ctx.lineTo(sx,sy+14*k);ctx.stroke();
+ ctx.restore()}
+// 満月の夜：その夜の真夜中の月の明るさが99%以上なら、大きな月が空に浮かぶ
+function moonAge(d){const ref=Date.UTC(2000,0,6,18,14);let a=((d.getTime()-ref)/86400000)%29.530588853;if(a<0)a+=29.530588853;return a}
+function isFullMoonNight(){
+ const now=new Date(),h=now.getHours();let mid;
+ if(h>=18)mid=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,0);
+ else if(h<6)mid=new Date(now.getFullYear(),now.getMonth(),now.getDate(),0,0,0);
+ else return false;
+ const age=moonAge(mid),illum=(1-Math.cos(2*Math.PI*age/29.530588853))/2;
+ return illum>=0.99}
+let moonToast=false;
+function drawMoon(dt,k){
+ if(!isFullMoonNight())return;
+ if(!moonToast){moonToast=true;toast(TR('fullmoon'),4000)}
+ const mx=W*.18,my=H*.14,r=30*k;
+ if(!LIGHT){ctx.save();ctx.globalCompositeOperation='lighter';
+  const g=ctx.createRadialGradient(mx,my,0,mx,my,90*k);
+  g.addColorStop(0,'rgba(255,244,214,.55)');g.addColorStop(1,'rgba(255,244,214,0)');
+  ctx.fillStyle=g;ctx.fillRect(mx-90*k,my-90*k,180*k,180*k);ctx.restore()}
+ ctx.save();ctx.fillStyle='#fff6da';ctx.beginPath();ctx.arc(mx,my,r,0,7);ctx.fill();
+ ctx.fillStyle='rgba(205,192,165,.35)';
+ ctx.beginPath();ctx.arc(mx-r*.3,my-r*.15,r*.22,0,7);ctx.fill();
+ ctx.beginPath();ctx.arc(mx+r*.25,my+r*.3,r*.16,0,7);ctx.fill();
+ ctx.beginPath();ctx.arc(mx+r*.1,my-r*.4,r*.12,0,7);ctx.fill();
+ ctx.restore()}
 // night mode
 function nightLog(t){if(nm.on){nm.burn++;if(nm.words.length<8)nm.words.push(t)}}
 function startNight(){nm={on:true,fin:false,t:0,words:[],burn:0,wood:0,maxHeat:heat,rec:false,sum:null};$('nr').hidden=true;toast(TR('nightStart'))}
@@ -525,7 +568,7 @@ function frame(now){
  // ash (paper becomes ash and rises with the embers)
  ash=ash.filter(a=>{a.l+=dt;if(a.l>a.m)return false;const q=a.l/a.m;a.x+=(a.vx+Math.sin(T*3+a.p)*24)*dt;a.y+=a.vy*dt;a.r+=a.vr*dt;
   ctx.save();ctx.translate(a.x,a.y);ctx.rotate(a.r);ctx.fillStyle=`rgba(150,140,125,${.55*(1-q)})`;ctx.fillRect(-a.s/2,-a.s/4,a.s,a.s/2);ctx.restore();return true});
- drawWx(dt,k);
+ drawWx(dt,k);drawXmas(dt,k);drawMoon(dt,k);
  if(rec){const d=cv.width/W,ar=720/1280;let cw=W,ch=W/ar;if(ch>H){ch=H;cw=H*ar}
   const[fx]=P(CFG.fireX,CFG.fireMid),cx=Math.min(W-cw,Math.max(0,fx-cw/2)),cy=(H-ch)*.5;
   rctx.drawImage(cv,cx*d,cy*d,cw*d,ch*d,0,0,720,1280);

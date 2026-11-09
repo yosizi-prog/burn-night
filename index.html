@@ -136,6 +136,7 @@ sleep:'🌙 おやすみ',sleepOnBtn:'🌙 おやすみ ✓',sleepOn:'おやす�
 stream:'📺 配信',streamOnBtn:'📺 配信 ✓',streamOn:'配信モードにしたよ。画面がすっきりして、火と夜空だけになるよ',streamOff:'配信モードをやめたよ',streamExit:'配信をやめる',
 sleepWords:['おやすみ','今日もおつかれさま','ゆっくり休んでね','いい夢を','明日もいい日になりますように','静かな夜'],
 fishCaught:'ぷにが「{t}」を釣ってきたよ！タップして焼こう',fishGrilled:'おいしそうに焼けたよ',fishEaten:'いただきます',
+foxVisit:'キツネが訪れた',owlVisit:'フクロウが訪れた',deerVisit:'シカが訪れた',
 nightStart:'一晩が始まった。夜明けまでに、燃やしたいものを燃やそう',
 sumBurn:'燃やした言葉　',sumWood:'くべた薪　',sumHeat:'いちばん強い火　',burnedWords:'燃やした言葉：',sep:'、',
 lightOn:'軽いモードにしたよ。火は少しおとなしくなるけど、スマホは熱くなりにくいよ',lightOff:'通常モードに戻したよ',
@@ -162,6 +163,7 @@ sleep:'🌙 Sleep',sleepOnBtn:'🌙 Sleep ✓',sleepOn:'Sleep mode on. The fire 
 stream:'📺 Stream',streamOnBtn:'📺 Stream ✓',streamOn:'Stream mode on. The screen is clean — just the fire and the night sky.',streamOff:'Stream mode off.',streamExit:'Exit stream',
 sleepWords:['Good night','Rest well','Sweet dreams','Sleep tight','You did well today','Quiet night'],
 fishCaught:'Puni caught a "{t}"! Tap to grill it.',fishGrilled:'It grilled beautifully!',fishEaten:'Bon appétit!',
+foxVisit:'A fox has come to visit',owlVisit:'An owl has come to visit',deerVisit:'A deer has come to visit',
 nightStart:'The night has begun. Burn what you want to let go of before dawn.',
 sumBurn:'Words burned ',sumWood:'Wood fed ',sumHeat:'Strongest fire ',burnedWords:'Words burned: ',sep:', ',
 lightOn:'Light mode on. The fire is a little quieter, but your phone will stay cooler.',lightOff:'Back to normal mode.',
@@ -188,6 +190,7 @@ sleep:'🌙 睡眠',sleepOnBtn:'🌙 睡眠 ✓',sleepOn:'已开启晚安模式�
 stream:'📺 直播',streamOnBtn:'📺 直播 ✓',streamOn:'已开启直播模式。画面变得简洁，只剩下火和夜空。',streamOff:'已关闭直播模式。',streamExit:'退出直播',
 sleepWords:['晚安','好好休息','做个好梦','今天辛苦了','愿你有个好梦','安静的夜'],
 fishCaught:'普尼钓到了「{t}」！点一下烤了吧。',fishGrilled:'烤得好香啊',fishEaten:'开动了！',
+foxVisit:'狐狸来访了',owlVisit:'猫头鹰来访了',deerVisit:'鹿来访了',
 nightStart:'一夜开始了。在天亮之前，把想放下的都烧掉吧。',
 sumBurn:'烧掉的话语　',sumWood:'添的柴　',sumHeat:'最旺的火　',burnedWords:'烧掉的话语：',sep:'、',
 lightOn:'已切换到轻量模式。火会安静一点，但手机不容易发烫。',lightOff:'已回到普通模式。',
@@ -768,6 +771,179 @@ function fishTap(x,y){
  }
  return false;
 }
+// レアな動物の訪問（長い夜に一人で寂しいとき、たまに動物が訪れてそばにいてくれる）
+// 最初の1回は5分後、その後は30〜60分に1回、3種類の中からランダムに1匹。
+// ゆっくりフェードインして3〜5分滞在し、ゆっくりフェードアウトする。音は出さない（寝落ち配信で起こさないように）。
+// 動物は見るだけの存在で、タップしても何も起きない。
+var ANIMALS=[
+ {id:'fox',ja:'キツネ',en:'Fox',zh:'狐狸',visit:'foxVisit'},
+ {id:'owl',ja:'フクロウ',en:'Owl',zh:'猫头鹰',visit:'owlVisit'},
+ {id:'deer',ja:'シカ',en:'Deer',zh:'鹿',visit:'deerVisit'}
+];
+function animalName(a){return a[LANG]||a.ja}
+function animalSpot(a){
+ if(a.id==='fox')return[W*.72,H*.78]; // 火の右側の地面に座る
+ if(a.id==='owl')return[W*.15,H*.18]; // 左上の枝にとまる
+ return[W*.48,H*.60]; // シカは池の右の縁に立つ
+}
+let animal={sp:null,st:'none',t:0,a:0,stay:0}; // st: none/fadein(現れる)/stay(滞在)/fadeout(帰る)
+let animalT=300; // 最初の訪問は5分後、その後は30〜60分ランダム
+function updateAnimals(dt){
+ if(document.getElementById('intro'))return; // イントロ中はタイマーを進めない
+ if(animal.st==='none'){
+  animalT-=dt;
+  if(animalT<=0){
+   animal.sp=ANIMALS[Math.random()*ANIMALS.length|0];
+   animal.st='fadein';animal.t=0;animal.a=0;animal.stay=rnd(180,300);
+   toast(TR(animal.sp.visit),4000); // 静かに現れる（音は出さない）
+  }
+ }else if(animal.st==='fadein'){
+  animal.t+=dt;animal.a=Math.min(1,animal.t/3);
+  if(animal.t>=3){animal.st='stay';animal.t=0;}
+ }else if(animal.st==='stay'){
+  animal.t+=dt;
+  if(animal.t>=animal.stay){animal.st='fadeout';animal.t=0;}
+ }else if(animal.st==='fadeout'){
+  animal.t+=dt;animal.a=Math.max(0,1-animal.t/3);
+  if(animal.t>=3){animal.st='none';animal.sp=null;animal.a=0;animalT=rnd(1800,3600);}
+ }
+}
+function drawAnimals(dt,k){
+ if(!animal.sp||animal.st==='none'||animal.a<=0)return;
+ const[x,y]=animalSpot(animal.sp);
+ ctx.save();ctx.globalAlpha=animal.a;
+ if(animal.sp.id==='fox')drawFox(x,y,k);
+ else if(animal.sp.id==='owl')drawOwl(x,y,k);
+ else drawDeer(x,y,k);
+ ctx.restore();
+}
+function drawFox(x,y,k){
+ const s=k;
+ ctx.save();ctx.translate(x,y);
+ // 尻尾（体に巻き付けたふさふさした尻尾、オレンジに白い先）
+ ctx.fillStyle='#b96a24';
+ ctx.beginPath();ctx.ellipse(14*s,-8*s,20*s,9*s,-.5,0,7);ctx.fill();
+ ctx.fillStyle='#f5f0e6';
+ ctx.beginPath();ctx.ellipse(26*s,-16*s,8*s,6*s,-.5,0,7);ctx.fill();
+ // 体（座った姿、オレンジの丸み）
+ ctx.fillStyle='#d98a3a';
+ ctx.beginPath();
+ ctx.moveTo(-20*s,0);
+ ctx.quadraticCurveTo(-24*s,-34*s,0,-36*s);
+ ctx.quadraticCurveTo(20*s,-34*s,18*s,0);
+ ctx.quadraticCurveTo(0,5*s,-20*s,0);
+ ctx.fill();
+ // 白い胸
+ ctx.fillStyle='#f5f0e6';
+ ctx.beginPath();ctx.ellipse(2*s,-16*s,10*s,14*s,0,0,7);ctx.fill();
+ // 頭
+ ctx.fillStyle='#d98a3a';
+ ctx.beginPath();ctx.arc(0,-38*s,13*s,0,7);ctx.fill();
+ // 耳（ピンと立った耳、片方はたまにぴくっと動く）
+ const tw=(T%8)<.4?-.18:0;
+ ctx.fillStyle='#c97a2e';
+ ctx.beginPath();ctx.moveTo(-10*s,-46*s);ctx.lineTo(-8*s,-58*s);ctx.lineTo(-2*s,-47*s);ctx.closePath();ctx.fill();
+ ctx.save();ctx.translate(6*s,-48*s);ctx.rotate(tw);ctx.beginPath();ctx.moveTo(-4*s,0);ctx.lineTo(-2*s,-11*s);ctx.lineTo(4*s,-1*s);ctx.closePath();ctx.fill();ctx.restore();
+ ctx.fillStyle='#3a2a1a';
+ ctx.beginPath();ctx.moveTo(-8.5*s,-47*s);ctx.lineTo(-8*s,-54*s);ctx.lineTo(-4*s,-47.5*s);ctx.closePath();ctx.fill();
+ // 顔（白いほっぺ、穏やかに閉じた目、鼻）
+ ctx.fillStyle='#f5f0e6';
+ ctx.beginPath();ctx.ellipse(-5*s,-34*s,5*s,3.5*s,0,0,7);ctx.fill();
+ ctx.beginPath();ctx.ellipse(5*s,-34*s,5*s,3.5*s,0,0,7);ctx.fill();
+ ctx.strokeStyle='#3a2a1a';ctx.lineWidth=1.6*s;ctx.lineCap='round';
+ ctx.beginPath();ctx.arc(-5*s,-40*s,2.5*s,Math.PI*1.15,Math.PI*1.85);ctx.stroke();
+ ctx.beginPath();ctx.arc(5*s,-40*s,2.5*s,Math.PI*1.15,Math.PI*1.85);ctx.stroke();
+ ctx.fillStyle='#2a1a12';
+ ctx.beginPath();ctx.arc(0,-33*s,2.2*s,0,7);ctx.fill();
+ ctx.restore();
+}
+function drawOwl(x,y,k){
+ const s=k;
+ ctx.save();ctx.translate(x,y);ctx.rotate(Math.sin(T*.25)*.04); // 首をほんの少し動かす
+ // 枝
+ ctx.strokeStyle='#4a3520';ctx.lineWidth=3.5*s;ctx.lineCap='round';
+ ctx.beginPath();ctx.moveTo(-26*s,12*s);ctx.lineTo(26*s,10*s);ctx.stroke();
+ // 体（茶グレーの丸い体）
+ ctx.fillStyle='#8a7a68';
+ ctx.beginPath();ctx.ellipse(0,0,16*s,20*s,0,0,7);ctx.fill();
+ // お腹（薄い色）
+ ctx.fillStyle='#c9bda8';
+ ctx.beginPath();ctx.ellipse(0,6*s,10*s,12*s,0,0,7);ctx.fill();
+ // 翼（濃い色の側面）
+ ctx.fillStyle='#6a5a48';
+ ctx.beginPath();ctx.ellipse(-13*s,0,5*s,15*s,-.15,0,7);ctx.fill();
+ ctx.beginPath();ctx.ellipse(13*s,0,5*s,15*s,.15,0,7);ctx.fill();
+ // 耳の房（小さな三角）
+ ctx.fillStyle='#6a5a48';
+ ctx.beginPath();ctx.moveTo(-10*s,-17*s);ctx.lineTo(-8*s,-25*s);ctx.lineTo(-4*s,-17*s);ctx.closePath();ctx.fill();
+ ctx.beginPath();ctx.moveTo(4*s,-17*s);ctx.lineTo(8*s,-25*s);ctx.lineTo(10*s,-17*s);ctx.closePath();ctx.fill();
+ // 目（大きく、ゆっくりまばたきする）
+ const blink=(T%5)<.18;
+ ctx.fillStyle='#f5f0e6';
+ ctx.beginPath();ctx.arc(-6*s,-8*s,5*s,0,7);ctx.fill();
+ ctx.beginPath();ctx.arc(6*s,-8*s,5*s,0,7);ctx.fill();
+ if(blink){
+  ctx.strokeStyle='#2a2018';ctx.lineWidth=1.5*s;
+  ctx.beginPath();ctx.moveTo(-10*s,-8*s);ctx.lineTo(-2*s,-8*s);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(2*s,-8*s);ctx.lineTo(10*s,-8*s);ctx.stroke();
+ }else{
+  ctx.fillStyle='#1a1410';
+  ctx.beginPath();ctx.arc(-6*s,-8*s,2.6*s,0,7);ctx.fill();
+  ctx.beginPath();ctx.arc(6*s,-8*s,2.6*s,0,7);ctx.fill();
+  ctx.fillStyle='#fff';
+  ctx.beginPath();ctx.arc(-5*s,-9*s,1*s,0,7);ctx.fill();
+  ctx.beginPath();ctx.arc(7*s,-9*s,1*s,0,7);ctx.fill();
+ }
+ // くちばし（小さな三角、オレンジ）
+ ctx.fillStyle='#d98a3a';
+ ctx.beginPath();ctx.moveTo(-3*s,-4*s);ctx.lineTo(3*s,-4*s);ctx.lineTo(0,0);ctx.closePath();ctx.fill();
+ // 足（枝をつかむ）
+ ctx.strokeStyle='#d98a3a';ctx.lineWidth=2*s;
+ ctx.beginPath();ctx.moveTo(-6*s,18*s);ctx.lineTo(-6*s,12*s);ctx.moveTo(6*s,18*s);ctx.lineTo(6*s,12*s);ctx.stroke();
+ ctx.restore();
+}
+function drawDeer(x,y,k){
+ const s=k;
+ ctx.save();ctx.translate(x,y);
+ // 首の上げ下げ（水を飲んだり、たまに頭を上げたり、ゆっくり）
+ const bob=Math.sin(T*.45)*.1,look=(Math.sin(T*.23)>0.92)?.2:0;
+ // 脚（4本、細い）
+ ctx.strokeStyle='#7a5a34';ctx.lineWidth=3*s;ctx.lineCap='round';
+ ctx.beginPath();
+ ctx.moveTo(-10*s,-22*s);ctx.lineTo(-12*s,0);
+ ctx.moveTo(-4*s,-22*s);ctx.lineTo(-4*s,0);
+ ctx.moveTo(5*s,-22*s);ctx.lineTo(5*s,0);
+ ctx.moveTo(11*s,-22*s);ctx.lineTo(13*s,0);
+ ctx.stroke();
+ // 体（茶色の楕円、横向き）
+ ctx.fillStyle='#9a7448';
+ ctx.beginPath();ctx.ellipse(0,-32*s,24*s,13*s,0,0,7);ctx.fill();
+ // お腹（薄い色）
+ ctx.fillStyle='#c9a87a';
+ ctx.beginPath();ctx.ellipse(0,-26*s,18*s,7*s,0,0,7);ctx.fill();
+ // 背中の白い斑点（さりげなく）
+ ctx.fillStyle='rgba(245,240,230,.55)';
+ ctx.beginPath();ctx.arc(-8*s,-40*s,2*s,0,7);ctx.fill();
+ ctx.beginPath();ctx.arc(2*s,-42*s,1.8*s,0,7);ctx.fill();
+ ctx.beginPath();ctx.arc(10*s,-38*s,1.6*s,0,7);ctx.fill();
+ // 首（前に下げて水を飲む。角度はゆっくり上下する）
+ ctx.save();ctx.translate(-18*s,-38*s);ctx.rotate(.35+bob+look);
+ ctx.strokeStyle='#9a7448';ctx.lineWidth=7*s;ctx.lineCap='round';
+ ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,32*s);ctx.stroke();
+ ctx.fillStyle='#9a7448';
+ ctx.beginPath();ctx.ellipse(0,35*s,7*s,5*s,0,0,7);ctx.fill();
+ ctx.fillStyle='#5a4028';
+ ctx.beginPath();ctx.ellipse(1*s,39*s,3.5*s,2.5*s,0,0,7);ctx.fill();
+ ctx.fillStyle='#7a5a34';
+ ctx.beginPath();ctx.ellipse(-4*s,30*s,4*s,2*s,-.6,0,7);ctx.fill();
+ ctx.fillStyle='#1a1410';
+ ctx.beginPath();ctx.arc(2*s,33*s,1.6*s,0,7);ctx.fill();
+ ctx.restore();
+ // 尻尾（小さな白い尻尾）
+ ctx.fillStyle='#f5f0e6';
+ ctx.beginPath();ctx.ellipse(23*s,-38*s,4*s,3*s,.5,0,7);ctx.fill();
+ ctx.restore();
+}
 $('shr').onclick=async()=>{if(!vblob)return;const ext=vblob.type.includes('mp4')?'mp4':'webm';
  try{const f=new File([vblob],'burn-night.'+ext,{type:vblob.type});
   if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],text:'#BurnNight'});$('vm').textContent='';return}
@@ -954,6 +1130,7 @@ function frame(now){
   const[bx,by]=P(CFG.fireX,CFG.fireBase);for(let i=0;i<2;i++)if(Math.random()<EB*heat*1.4+.03)ember(bx+rnd(-.05,.05)*m.dw,by+rnd(-.04,.02)*m.dh,{vy:-rnd(50,130)*k,h:aro?rnd(170,280):rnd(15,40)})}
  updateFire(dt,k);updateKettle(dt);updateSleep(dt,k);drawKettle(dt,k);
  updateFish(dt);drawPond(dt,k);drawPuni(dt,k);drawFish(dt,k);
+ updateAnimals(dt);drawAnimals(dt,k);
  // stars (10枚で自分の星が星座に、50枚で夜空が少し明るく)
  if(burned>=10){const mine=stars.filter(s=>s.mine).sort((a,b)=>a.x-b.x);
   ctx.strokeStyle='rgba(200,220,255,.14)';ctx.lineWidth=1;ctx.beginPath();

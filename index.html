@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Burn Night</title>
 <meta name="description" content="手放したいことを紙に書いて、焚き火にくべる。灰は星になって、夜空に残る。">
 <meta property="og:title" content="Burn Night — 手放したいことを、火にくべよう">
@@ -8,7 +8,7 @@
 :root{color-scheme:dark;--bg:#070a18;--fg:#ffe9cf;--ember:#ff9a3c;--paper:#f3e6c8}
 html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;overflow:hidden;touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior:none}
 #t{-webkit-user-select:text;user-select:text}
-canvas{position:fixed;inset:0;width:100%;height:100%}
+canvas{position:fixed;inset:0;width:100%;height:100%;touch-action:none}
 #top{position:fixed;left:0;right:0;top:0;padding:calc(12px + env(safe-area-inset-top,0px)) 16px 24px;display:flex;justify-content:space-between;align-items:flex-start;background:linear-gradient(rgba(5,6,15,.7),transparent);pointer-events:none}
 h1{margin:0;font-size:22px;letter-spacing:.3em;font-weight:600;text-shadow:0 0 14px rgba(255,150,60,.7)}
 #sub{margin:4px 0 0;font-size:12px;opacity:.8;letter-spacing:.08em}
@@ -56,6 +56,7 @@ h1{margin:0;font-size:22px;letter-spacing:.3em;font-weight:600;text-shadow:0 0 1
 #intro .terms{font-size:11px;opacity:.55;line-height:1.7;margin:16px 0 0}
 #intro .village{font-size:12px;opacity:.8;line-height:1.7;margin:10px 0 0}
 #intro .village a{color:var(--fg);text-decoration:underline;text-underline-offset:3px}
+#intro #lgbI{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:16px;min-width:0;padding:8px 12px;margin:0}
 #bkv{pointer-events:auto;display:inline-block;margin-top:6px;font-size:12px;opacity:.75;color:var(--fg);text-decoration:none;background:rgba(0,0,0,.35);border:1px solid rgba(255,200,140,.3);border-radius:14px;padding:4px 10px}
 .rl2{display:flex;align-items:center;gap:4px;font-size:12px;opacity:.85;white-space:nowrap}
 #wd{position:fixed;left:0;right:0;bottom:calc(88px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;align-items:center;padding:0 14px}
@@ -88,7 +89,7 @@ h1{margin:0;font-size:22px;letter-spacing:.3em;font-weight:600;text-shadow:0 0 1
 <div><div id="cnt"></div><div id="bs"><button id="wxb" class="mb"></button><button id="tmb" class="mb"></button><button id="nb" class="mb">🌙 一晩</button><button id="snd" class="mb" aria-label="音">🔇 音</button><button id="ltb" class="mb">🍃 軽い</button><button id="lgb" class="mb">🌐 日本語</button></div></div></div>
 <div id="toast"></div>
 <div id="mg" hidden><div id="mgf"><iframe id="mgv" title="live" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" frameborder="0"></iframe><img id="mgi" alt=""></div><div id="mgc"><span id="mgn"></span><span id="mgl"></span></div><button id="mgx" aria-label="閉じる">✕</button></div>
-<div id="intro"><div><h2>Burn Night</h2><p id="ip">手放したいことを紙に書いて、<br>火にくべよう。<br>灰は星になって、夜空に残る。</p><button id="i1" class="nbtn">🔊 音ありで始める</button><button id="i2" class="nbtn sub">音なしで始める</button><button id="i3" class="nbtn sub">🍃 軽いモードで始める</button><p class="terms" id="trm">燃やした言葉は、この端末の夜空にだけ星として残ります。ほかの人と共有されることはありません。</p><p class="village"><a id="bkvI" href="https://punioasis-9mmhfbw2.manus.game">ぷにたちのオアシス村に戻る</a></p></div></div>
+<div id="intro"><button id="lgbI" class="mb">🌐 日本語</button><div><h2>Burn Night</h2><p id="ip">手放したいことを紙に書いて、<br>火にくべよう。<br>灰は星になって、夜空に残る。</p><button id="i1" class="nbtn">🔊 音ありで始める</button><button id="i2" class="nbtn sub">音なしで始める</button><button id="i3" class="nbtn sub">🍃 軽いモードで始める</button><p class="terms" id="trm">燃やした言葉は、この端末の夜空にだけ星として残ります。ほかの人と共有されることはありません。</p><p class="village"><a id="bkvI" href="https://punioasis-9mmhfbw2.manus.game">ぷにたちのオアシス村に戻る</a></p></div></div>
 <div id="nr" hidden><h2 id="nrH">夜が明けた</h2><p id="nt"></p><p id="nw"></p><div><button id="n1" class="nbtn">もう一晩</button><button id="n2" class="nbtn sub">閉じる</button></div></div>
 <div id="sc" hidden><span id="st"></span><button id="lk" hidden></button><button id="rp" hidden>🚩</button></div>
 <div id="vid" hidden><video id="pv" playsinline loop muted autoplay></video><div id="vb"><button id="shr" class="nbtn">共有</button><button id="sv">動画を保存</button><button id="cl">閉じる</button></div><p id="vm"></p></div>
@@ -182,6 +183,7 @@ function applyLang(){
  const md=document.querySelector('meta[name="description"]');if(md)md.setAttribute('content',d.desc);
  const og=document.querySelector('meta[property="og:title"]');if(og)og.setAttribute('content',d.og);
  $('lgb').textContent='🌐 '+d.name;
+ $('lgbI').textContent='🌐 '+d.name;
  $('sub').textContent=TR('tonight')+tonight();
  $('t').placeholder=TR('ph')+tonight()+TR('phEnd');
  $('go').textContent=TR('go');
@@ -203,6 +205,7 @@ function applyLang(){
  seeds=makeSeeds();rebuild();count();wbtn();
 }
 $('lgb').onclick=()=>{LANG=LANG==='ja'?'en':LANG==='en'?'zh':'ja';applyLang();toast(TR('langSet'))};
+$('lgbI').onclick=$('lgb').onclick;
 // painted:true=背景の絵に炎が描かれている / false=炎の無い背景（炎はコードが描く）
 var padT='#0b1236',padT0='rgba(11,18,54,0)',padB='#120b08',padB0='rgba(18,11,8,0)';
 function samplePad(im){try{const c=document.createElement('canvas');c.width=c.height=1;const x=c.getContext('2d');const f=sy=>{x.clearRect(0,0,1,1);x.drawImage(im,0,sy,im.width,8,0,0,1,1);const d=x.getImageData(0,0,1,1).data;return[d[0],d[1],d[2]]};const a=f(0),b=f(im.height-8);return{t:`rgb(${a})`,t0:`rgba(${a},0)`,b:`rgb(${b})`,b0:`rgba(${b},0)`}}catch(e){return{t:padT,t0:padT0,b:padB,b0:padB0}}}

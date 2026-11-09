@@ -9,12 +9,14 @@
 html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;overflow:hidden;touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior:none}
 #t{-webkit-user-select:text;user-select:text}
 canvas{position:fixed;inset:0;width:100%;height:100%;touch-action:none}
+#dim{position:fixed;inset:0;background:rgba(0,0,10,.35);pointer-events:none}
+#dim[hidden]{display:none}
 #top{position:fixed;left:0;right:0;top:0;padding:calc(12px + env(safe-area-inset-top,0px)) 16px 24px;display:flex;justify-content:space-between;align-items:flex-start;background:linear-gradient(rgba(5,6,15,.7),transparent);pointer-events:none}
 h1{margin:0;font-size:22px;letter-spacing:.3em;font-weight:600;text-shadow:0 0 14px rgba(255,150,60,.7)}
 #sub{margin:4px 0 0;font-size:12px;opacity:.8;letter-spacing:.08em}
 #cnt{font-size:12px;opacity:.85;text-align:right;line-height:1.6}
 #snd{pointer-events:auto;margin-top:6px;background:rgba(0,0,0,.4);border:1px solid rgba(255,200,140,.4);color:var(--fg);border-radius:18px;padding:4px 10px;font:inherit;font-size:12px}
-#ltb.on{background:rgba(255,160,60,.35);border-color:#ffb020}
+#ltb.on,#slb.on{background:rgba(255,160,60,.35);border-color:#ffb020}
 #ui{position:fixed;left:0;right:0;bottom:0;padding:28px 14px calc(14px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;background:linear-gradient(transparent,rgba(5,6,15,.9))}
 #t{flex:1;min-width:0;background:rgba(243,230,200,.94);color:#2a1a0c;border:0;border-radius:6px;padding:12px;font:inherit;font-size:16px}
 #t::placeholder{color:#8a7a62}
@@ -85,8 +87,9 @@ h1{margin:0;font-size:22px;letter-spacing:.3em;font-weight:600;text-shadow:0 0 1
 #mg[hidden]{display:none}
 </style></head><body>
 <canvas id="c"></canvas>
+<div id="dim" hidden></div>
 <div id="top"><div><h1>Burn Night</h1><p id="sub">手放したいことを書いて、火にくべよう</p><a id="bkv" href="https://punioasis-9mmhfbw2.manus.game">🏕️ 村に戻る</a></div>
-<div><div id="cnt"></div><div id="bs"><button id="wxb" class="mb"></button><button id="tmb" class="mb"></button><button id="nb" class="mb">🌙 一晩</button><button id="snd" class="mb" aria-label="音">🔇 音</button><button id="ltb" class="mb">🍃 軽い</button><button id="lgb" class="mb">🌐 日本語</button></div></div></div>
+<div><div id="cnt"></div><div id="bs"><button id="wxb" class="mb"></button><button id="tmb" class="mb"></button><button id="nb" class="mb">🌙 一晩</button><button id="snd" class="mb" aria-label="音">🔇 音</button><button id="ltb" class="mb">🍃 軽い</button><button id="slb" class="mb">🌙 おやすみ</button><button id="lgb" class="mb">🌐 日本語</button></div></div></div>
 <div id="toast"></div>
 <div id="mg" hidden><div id="mgf"><iframe id="mgv" title="live" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" frameborder="0"></iframe><img id="mgi" alt=""></div><div id="mgc"><span id="mgn"></span><span id="mgl"></span></div><button id="mgx" aria-label="閉じる">✕</button></div>
 <div id="intro"><button id="lgbI" class="mb">🌐 日本語</button><div><h2>Burn Night</h2><p id="ip">手放したいことを紙に書いて、<br>火にくべよう。<br>灰は星になって、夜空に残る。</p><button id="i1" class="nbtn">🔊 音ありで始める</button><button id="i2" class="nbtn sub">音なしで始める</button><button id="i3" class="nbtn sub">🍃 軽いモードで始める</button><p class="terms" id="trm">燃やした言葉は、この端末の夜空にだけ星として残ります。ほかの人と共有されることはありません。</p><p class="village"><a id="bkvI" href="https://punioasis-9mmhfbw2.manus.game">ぷにたちのオアシス村に戻る</a></p></div></div>
@@ -115,6 +118,8 @@ dawn:'夜が明けた',again:'もう一晩',close:'閉じる',share:'共有',sav
 cnt1:'燃やした言葉　',cnt2:'<br>みんなの星　',cnt3:'<br>今夜で',cnt4:'夜目',
 letgo:'この言葉を、手放す',fireOut:'火が消えそう…灰の中の炭が赤く残っている',fireLow:'火が小さくなってきた。薪をくべよう',
 becameStar:'「{t}」は星になった',constellation:'空に小さな星座ができた',brighter:'夜空が少し明るくなった',leonid:'今夜はしし座流星群の夜',geminid:'今夜はふたご座流星群の夜',xmas:'今夜はクリスマスの夜',fullmoon:'今夜は満月の夜',mirage:'蜃気楼が現れた。タップしてのぞいてみよう',live:'● ライブ',mgTokyo:'東京・渋谷',mgSeoul:'ソウル・漢江',mgTaipei:'台北',mgHK:'香港',mgSydney:'シドニー',kettle:'🍵 やかん',boiled:'お湯が沸いたよ',kettlePut:'やかんを火にかけたよ。お湯が沸くのを待とう',
+sleep:'🌙 おやすみ',sleepOnBtn:'🌙 おやすみ ✓',sleepOn:'おやすみモードにしたよ。火は自動でくべるし、やさしい言葉が星になるよ',sleepOff:'おやすみモードをやめたよ',
+sleepWords:['おやすみ','今日もおつかれさま','ゆっくり休んでね','いい夢を','明日もいい日になりますように','静かな夜'],
 nightStart:'一晩が始まった。夜明けまでに、燃やしたいものを燃やそう',
 sumBurn:'燃やした言葉　',sumWood:'くべた薪　',sumHeat:'いちばん強い火　',burnedWords:'燃やした言葉：',sep:'、',
 lightOn:'軽いモードにしたよ。火は少しおとなしくなるけど、スマホは熱くなりにくいよ',lightOff:'通常モードに戻したよ',
@@ -137,6 +142,8 @@ dawn:'Dawn has come',again:'One more night',close:'Close',share:'Share',save:'Sa
 cnt1:'Words burned ',cnt2:"<br>Everyone's stars ",cnt3:'<br>Night ',cnt4:'',
 letgo:'Let this word go',fireOut:'The fire is about to go out… a red ember remains in the ash',fireLow:'The fire is getting small. Feed it some wood.',
 becameStar:'"{t}" became a star',constellation:'A small constellation appeared in the sky',brighter:'The night sky grew a little brighter',leonid:'Tonight is the Leonid meteor shower',geminid:'Tonight is the Geminid meteor shower',xmas:'Tonight is Christmas night',fullmoon:'Tonight is a full moon night',mirage:'A mirage appeared. Tap to take a look.',live:'● LIVE',mgTokyo:'Shibuya, Tokyo',mgSeoul:'Seoul, Han River',mgTaipei:'Taipei',mgHK:'Hong Kong',mgSydney:'Sydney',kettle:'🍵 Kettle',boiled:'The water is boiling',kettlePut:'Put the kettle on the fire. Wait for the water to boil.',
+sleep:'🌙 Sleep',sleepOnBtn:'🌙 Sleep ✓',sleepOn:'Sleep mode on. The fire feeds itself, and gentle words will become stars.',sleepOff:'Sleep mode off.',
+sleepWords:['Good night','Rest well','Sweet dreams','Sleep tight','You did well today','Quiet night'],
 nightStart:'The night has begun. Burn what you want to let go of before dawn.',
 sumBurn:'Words burned ',sumWood:'Wood fed ',sumHeat:'Strongest fire ',burnedWords:'Words burned: ',sep:', ',
 lightOn:'Light mode on. The fire is a little quieter, but your phone will stay cooler.',lightOff:'Back to normal mode.',
@@ -159,6 +166,8 @@ dawn:'天亮了',again:'再过一夜',close:'关闭',share:'分享',save:'保存
 cnt1:'烧掉的话语　',cnt2:'<br>大家的星星　',cnt3:'<br>今晚是第',cnt4:'夜',
 letgo:'放下这句话',fireOut:'火快要熄灭了……灰烬中还留着红红的炭',fireLow:'火变小了。添些柴吧。',
 becameStar:'「{t}」变成了星星',constellation:'天空中出现了一个小小的星座',brighter:'夜空变得稍微明亮了一点',leonid:'今晚是狮子座流星雨之夜',geminid:'今晚是双子座流星雨之夜',xmas:'今晚是圣诞之夜',fullmoon:'今晚是满月之夜',mirage:'出现了海市蜃楼。点一下看看吧。',live:'● 直播',mgTokyo:'东京·涩谷',mgSeoul:'首尔·汉江',mgTaipei:'台北',mgHK:'香港',mgSydney:'悉尼',kettle:'🍵 水壶',boiled:'水烧开了',kettlePut:'把水壶放在火上。等水烧开吧。',
+sleep:'🌙 睡眠',sleepOnBtn:'🌙 睡眠 ✓',sleepOn:'已开启晚安模式。火会自动添柴，温柔的话语会变成星星。',sleepOff:'已关闭晚安模式。',
+sleepWords:['晚安','好好休息','做个好梦','今天辛苦了','愿你有个好梦','安静的夜'],
 nightStart:'一夜开始了。在天亮之前，把想放下的都烧掉吧。',
 sumBurn:'烧掉的话语　',sumWood:'添的柴　',sumHeat:'最旺的火　',burnedWords:'烧掉的话语：',sep:'、',
 lightOn:'已切换到轻量模式。火会安静一点，但手机不容易发烫。',lightOff:'已回到普通模式。',
@@ -196,6 +205,7 @@ function applyLang(){
  $('n1').textContent=TR('again');$('n2').textContent=TR('close');
  $('shr').textContent=TR('share');$('sv').textContent=TR('save');$('cl').textContent=TR('close');
  $('ltb').textContent=LIGHT?TR('lightOnBtn'):TR('light');
+ $('slb').textContent=SLEEP?TR('sleepOnBtn'):TR('sleep');
  $('snd').textContent=on?TR('sndOn'):TR('sndOff');
  $('nb').textContent=nm.on?'🌙 '+Math.floor(Math.min(1,nm.t/NL)*100)+'%':TR('night');
  $('wxb').textContent=TR('wx')[wx];
@@ -221,6 +231,8 @@ function applyBg(){const ph=phase();let im=mainImg,pos=BG_POS.night,pad=padMain;
  img=im;CFG.fireX=pos.fireX;CFG.fireBase=pos.fireBase;CFG.fireMid=pos.fireMid;CFG.fireTarget=pos.fireTarget;
  if(pad){padT=pad.t;padT0=pad.t0;padB=pad.b;padB0=pad.b0}}
 let LIGHT=false;try{LIGHT=localStorage.getItem('bn_light')==='1'}catch(e){}
+let SLEEP=false;try{SLEEP=localStorage.getItem('bn_sleep')==='1'}catch(e){}
+function volF(){return SLEEP?.5:1}
 function resize(){const d=LIGHT?1:Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0)}
 addEventListener('resize',resize);resize();
 function M(){const wr=W/img.width,s=Math.max(wr,Math.min(H/img.height,1.9*wr)),dw=img.width*s,dh=img.height*s;
@@ -233,9 +245,11 @@ function makeSeeds(){return TR('seeds').map((t,i)=>({x:SEED_POS[i][0],y:SEED_POS
 let stars=makeSeeds();
 let seeds=stars;let shared=[],uid=null,db=null,burned=0;
 let local=[];
-try{local=JSON.parse(localStorage.getItem('burnnight')||'[]').map(s=>({x:s.x,y:s.y,t:s.t,p:rnd(0,6),mine:true}))}catch(e){}
+try{local=JSON.parse(localStorage.getItem('burnnight')||'[]').map(s=>({x:s.x,y:s.y,t:s.t,p:rnd(0,6),mine:!s.sl}))}catch(e){}
 function rebuild(){const sh=shared.filter(s=>s.mine||((reps[s.id]||0)<3&&!myReps.has(s.id)));const base=sh.length>=8?sh:seeds.concat(sh);stars=base.concat(local);burned=stars.filter(s=>s.mine).length;count()}
-function keepLocal(s){local.push({x:s.x,y:s.y,t:s.t,p:rnd(0,6),mine:true});try{localStorage.setItem('burnnight',JSON.stringify(local.map(o=>({x:o.x,y:o.y,t:o.t}))))}catch(e){}rebuild()}
+function saveLocal(){try{localStorage.setItem('burnnight',JSON.stringify(local.map(o=>{const r={x:o.x,y:o.y,t:o.t};if(!o.mine)r.sl=1;return r})))}catch(e){}}
+function keepLocal(s){local.push({x:s.x,y:s.y,t:s.t,p:rnd(0,6),mine:true});saveLocal();rebuild()}
+function saveSleepStar(s){local.push({x:s.x,y:s.y,t:s.t,p:rnd(0,6),mine:false});saveLocal();rebuild()}
 function saveMine(s){if(db){db.collection('stars').add({x:s.x,y:s.y,t:s.t,u:uid,ts:Date.now()}).catch(()=>keepLocal(s))}else keepLocal(s)}
 function count(){$('cnt').innerHTML=TR('cnt1')+burned+TR('cnt2')+stars.length+TR('cnt3')+(typeof days==='number'?days:1)+TR('cnt4')}
 count();
@@ -245,28 +259,30 @@ function ember(x,y,o={}){if(em.length>(LIGHT?200:700))return;em.push({x,y,vx:o.v
 // paper
 let paper=null,spirit=null,toastT;
 function toast(s,ms=2600){const e=$('toast');e.textContent=s;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),ms)}
-function burn(){
- const text=$('t').value.trim();if(!text||paper||spirit)return;
- $('t').value='';$('go').disabled=true;$('t').blur();
+function burn(autoText){
+ if(autoText&&typeof autoText!=='string')autoText=null;
+ const text=(autoText||$('t').value).trim();if(!text||paper||spirit)return;
+ if(!autoText){$('t').value='';$('t').blur();}
+ $('go').disabled=true;
  const lines=[];for(let i=0;i<text.length;i+=8)lines.push([...text.slice(i,i+8)]);
  // 短冊は下から焦げていく：下の字ほど早く燃える
  const chars=[];lines.forEach((l,li)=>l.forEach((ch,ci)=>chars.push({ch,li,ci,n:l.length,th:Math.min(.92,.12+.68*(ci/7)+li*.03+rnd(0,.12)),gone:false,flash:0,rot:rnd(-.06,.06),dx:rnd(-1,1),dy:rnd(-1,1)})));
  const pw=lines.length*28+34,ph=8*30+44,edge=()=>{const a=[];for(let i=0;i<=8;i++)a.push(rnd(-2.5,2.5));return a};
  const fibers=[];for(let i=0;i<12;i++)fibers.push({x:rnd(-pw/2+6,pw/2-6),y:rnd(-ph/2+8,ph/2-8),len:rnd(18,60),a:rnd(.05,.11),bend:rnd(-6,6)});
  for(let i=0;i<14;i++)fibers.push({dot:true,x:rnd(-pw/2+6,pw/2-6),y:rnd(-ph/2+8,ph/2-8),a:rnd(.04,.09)});
- paper={text,lines,chars,mask:$('mk').checked,pub:pubText(text),care:CARE.test(text),t:0,x0:W/2,y0:H-120,pw,ph,edge:{t:edge(),b:edge(),l:edge(),r:edge()},fibers};
+ paper={text,lines,chars,mask:autoText?false:$('mk').checked,pub:pubText(text),care:CARE.test(text),sleep:!!autoText,t:0,x0:W/2,y0:H-120,pw,ph,edge:{t:edge(),b:edge(),l:edge(),r:edge()},fibers};
  toast(TR('letgo'),1400);
- startRec();sfx('burn');
+ if(!autoText)startRec();sfx('burn');
  for(let i=0;i<6;i++)setTimeout(popOnce,i*160+1300);
 }
-$('go').onclick=burn;$('t').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing&&e.keyCode!==229)burn()});
+$('go').onclick=()=>burn();$('t').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing&&e.keyCode!==229)burn()});
 // audio
 let AC,master,kGain=null,on=false;
-function sfx(n,v=1){const s=CFG.sounds[n];if(!on||!s||!s.length||!window.Audio)return false;const src=Array.isArray(s)?s[Math.random()*s.length|0]:s;try{const a=new Audio(src);a.volume=Math.min(1,v);a.play().catch(()=>{});return true}catch(e){return false}}
+function sfx(n,v=1){const s=CFG.sounds[n];if(!on||!s||!s.length||!window.Audio)return false;const src=Array.isArray(s)?s[Math.random()*s.length|0]:s;try{const a=new Audio(src);a.volume=Math.min(1,v*volF());a.play().catch(()=>{});return true}catch(e){return false}}
 function popOnce(){if(!AC||!on)return;if(sfx('crackle',rnd(.2,.6)))return;const n=AC.sampleRate*.04|0,b=AC.createBuffer(1,n,AC.sampleRate),d=b.getChannelData(0);
  for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);
  const s=AC.createBufferSource();s.buffer=b;const h=AC.createBiquadFilter();h.type='highpass';h.frequency.value=rnd(1200,3200);
- const g=AC.createGain();g.gain.value=rnd(.15,.45);s.connect(h);h.connect(g);g.connect(AC.destination);s.start()}
+ const g=AC.createGain();g.gain.value=rnd(.15,.45)*volF();s.connect(h);h.connect(g);g.connect(AC.destination);s.start()}
 
 $('snd').onclick=()=>{
  try{if(!AC){AC=new(window.AudioContext||window.webkitAudioContext)();
@@ -277,7 +293,7 @@ $('snd').onclick=()=>{
   const kb=AC.createBufferSource();kb.buffer=b;kb.loop=true;const bp=AC.createBiquadFilter();bp.type='bandpass';bp.frequency.value=350;bp.Q.value=.8;kGain=AC.createGain();kGain.gain.value=0;kb.connect(bp);bp.connect(kGain);kGain.connect(master);kb.start();
   const sc=AC.createScriptProcessor(4096,0,1);sc.onaudioprocess=(e)=>{const o=e.outputBuffer.getChannelData(0);for(let i=0;i<o.length;i++){o[i]=0;if(Math.random()<0.001){o[i]=(Math.random()*2-1)*0.3}}};
   const hp=AC.createBiquadFilter();hp.type='highpass';hp.frequency.value=1000;sc.connect(hp);hp.connect(master)}
-  AC.resume();on=!on;master.gain.value=on?.15+.7*heat:0;$('snd').textContent=on?TR('sndOn'):TR('sndOff')}catch(e){}
+  AC.resume();on=!on;master.gain.value=on?(.15+.7*heat)*volF():0;$('snd').textContent=on?TR('sndOn'):TR('sndOff')}catch(e){}
 };
 // video export (9:16)
 let rec=null,vblob=null,vurl=null,vmime='',chunks=[];
@@ -308,12 +324,13 @@ function wbtn(){document.querySelectorAll('.wb').forEach(b=>{const t=b.dataset.w
 document.querySelectorAll('.wb').forEach(b=>b.onclick=()=>{const t=b.dataset.w;if(inv[t]<=0||(nm.on&&nm.t/NL>.88))return;inv[t]--;flying.push({t,u:0,x0:rnd(.3,.7)*W,y0:H-150});wbtn()});
 wbtn();
 const lp={};
-function loops(){if(master)master.gain.value=on?.15+.7*heat:0;[['rainLoop',on&&wx==='rain'?.7:0]].forEach(([n,v])=>{const src=CFG.sounds[n];if(!src)return;
+function loops(){if(master)master.gain.value=on?(.15+.7*heat)*volF():0;[['rainLoop',on&&wx==='rain'?.7:0]].forEach(([n,v])=>{const src=CFG.sounds[n];if(!src)return;
  if(!lp[n]){if(!on)return;try{lp[n]=new Audio(src);lp[n].loop=true}catch(e){return}}
- const a=lp[n];a.volume=Math.min(1,v);if(v>0&&a.paused)a.play().catch(()=>{});if(v===0&&!a.paused)a.pause()})}
+ const a=lp[n];a.volume=Math.min(1,v*volF());if(v>0&&a.paused)a.play().catch(()=>{});if(v===0&&!a.paused)a.pause()})}
 function updateFire(dt,k){
  const m=M(),pr=nm.on?nm.t/NL:0;
  if(nm.on){nm.t+=dt;nm.maxHeat=Math.max(nm.maxHeat,heat);
+  if(SLEEP&&nm.t>NL*.5)nm.t=NL*.5; // おやすみモード：一晩が途中で明けないよう、夜を真夜中で止める
   if(!nm.rec&&pr>=.85){nm.rec=true;startRec()}
   if(nm.t>=NL)endNight();
   const lab='🌙 '+Math.floor(Math.min(1,pr)*100)+'%';if($('nb').textContent!==lab)$('nb').textContent=lab}
@@ -367,7 +384,7 @@ function updateKettle(dt){
   kettle.temp=Math.max(20,kettle.temp-10*dt);
   if(kettle.temp<=20)kettle.boiled=false;
  }
- if(kGain)kGain.gain.value=on?boil*.22:0;
+ if(kGain)kGain.gain.value=on?boil*.22*volF():0;
  if(kettle.on&&boil>0){
   for(let i=0;i<(LIGHT?1:3);i++)if(Math.random()<boil*.5)kbub.push({x:0,y:0,vx:rnd(-6,6),vy:-rnd(25,60),l:0,m:rnd(.3,.7),r:rnd(1.5,3)});
   for(let i=0;i<(LIGHT?1:2);i++)if(Math.random()<boil*.4)ksteam.push({x:rnd(-4,4),y:0,vx:rnd(-4,4),vy:-rnd(14,30),l:0,m:rnd(1.5,3),r:rnd(3,6),p:rnd(0,6)});
@@ -455,6 +472,37 @@ function applyLight(){
 }
 $('ltb').onclick=()=>{LIGHT=!LIGHT;applyLight();toast(LIGHT?TR('lightOn'):TR('lightOff'))};
 applyLight();
+// おやすみモード（睡眠配信用）：火を自動でくべ、やさしい言葉を自動で燃やし、画面を暗く、音をやさしくする
+let sleepPaperT=rnd(180,300),sleepFeedT=0;
+function sleepWord(){const w=TR('sleepWords');return w[Math.random()*w.length|0]}
+function applySleep(){
+ try{localStorage.setItem('bn_sleep',SLEEP?'1':'0')}catch(e){}
+ $('slb').textContent=SLEEP?TR('sleepOnBtn'):TR('sleep');
+ $('slb').classList.toggle('on',SLEEP);
+ $('dim').hidden=!SLEEP;
+ if(SLEEP)sleepPaperT=rnd(180,300);
+ if(master)master.gain.value=on?(.15+.7*heat)*volF():0;
+}
+$('slb').onclick=()=>{SLEEP=!SLEEP;applySleep();toast(SLEEP?TR('sleepOn'):TR('sleepOff'))};
+applySleep();
+function updateSleep(dt,k){
+ if(!SLEEP)return;
+ sleepFeedT-=dt;
+ if(heat<.45&&sleepFeedT<=0){
+  sleepFeedT=8;
+  pieces.push({pw:WOOD.log.pw,dur:WOOD.log.dur,age:0,ramp:WOOD.log.ramp});
+  const[fx,fy]=P(CFG.fireX,CFG.fireTarget);
+  for(let i=0;i<(LIGHT?8:22);i++)ember(fx+rnd(-30,30),fy+rnd(-10,10),{vy:-rnd(60,220)*k,vx:rnd(-50,50)});
+  sfx('add');
+ }
+ sleepPaperT-=dt;
+ if(sleepPaperT<=0){
+  if(!paper&&!spirit&&!document.getElementById('intro')){
+   burn(sleepWord());
+   sleepPaperT=rnd(180,300);
+  }else sleepPaperT=10;
+ }
+}
 $('shr').onclick=async()=>{if(!vblob)return;const ext=vblob.type.includes('mp4')?'mp4':'webm';
  try{const f=new File([vblob],'burn-night.'+ext,{type:vblob.type});
   if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],text:'#BurnNight'});$('vm').textContent='';return}
@@ -638,7 +686,7 @@ function frame(now){
   if(!LIGHT){const g=ctx.createRadialGradient(fx,fy,0,fx,fy,m.dw*(.12+.2*heat));g.addColorStop(0,`rgba(255,160,60,${a})`);g.addColorStop(1,'rgba(255,100,20,0)');
   ctx.globalCompositeOperation='lighter';ctx.fillStyle=g;ctx.fillRect(0,0,W,H);ctx.globalCompositeOperation='source-over'}
   const[bx,by]=P(CFG.fireX,CFG.fireBase);for(let i=0;i<2;i++)if(Math.random()<EB*heat*1.4+.03)ember(bx+rnd(-.05,.05)*m.dw,by+rnd(-.04,.02)*m.dh,{vy:-rnd(50,130)*k,h:aro?rnd(170,280):rnd(15,40)})}
- updateFire(dt,k);updateKettle(dt);drawKettle(dt,k);
+ updateFire(dt,k);updateKettle(dt);updateSleep(dt,k);drawKettle(dt,k);
  // stars (10枚で自分の星が星座に、50枚で夜空が少し明るく)
  if(burned>=10){const mine=stars.filter(s=>s.mine).sort((a,b)=>a.x-b.x);
   ctx.strokeStyle='rgba(200,220,255,.14)';ctx.lineWidth=1;ctx.beginPath();
@@ -707,16 +755,16 @@ function frame(now){
   if(p>0&&p<1)for(let i=0;i<2;i++)ember(x+rnd(-80,80)*sc,y+rnd(-30,30)*sc,{h:rnd(15,40)});
   if(p>=1){for(let i=0;i<(LIGHT?12:40);i++)ember(x+rnd(-70,70),y+rnd(-20,20),{vy:-rnd(60,200)*k,vx:rnd(-40,40)});
    for(let i=0;i<(LIGHT?8:14);i++)ash.push({x:x+rnd(-60,60),y:y+rnd(-15,15),vx:rnd(-12,12),vy:-rnd(18,45),l:0,m:rnd(3,5),s:rnd(2,4.5),r:rnd(0,6),vr:rnd(-2,2),p:rnd(0,6)});
-   spirit={x0:x,y0:y,tx:rnd(.1,.9),ty:rnd(.05,.34),t:0,care:paper.care,text:paper.mask||paper.care?'●'.repeat(paper.text.length):paper.pub};paper=null}}
+   spirit={x0:x,y0:y,tx:rnd(.1,.9),ty:rnd(.05,.34),t:0,care:paper.care,sleep:paper.sleep,text:paper.mask||paper.care?'●'.repeat(paper.text.length):paper.pub};paper=null}}
  // spirit rising to become a star
  if(spirit){spirit.t+=dt;const q=Math.min(1,spirit.t/2.6),e=1-Math.pow(1-q,3);
   const x=spirit.x0+(spirit.tx*W-spirit.x0)*e+Math.sin(q*9)*14*(1-q),y=spirit.y0+(spirit.ty*H-spirit.y0)*e;
   ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(x,y,0,x,y,22);
   g.addColorStop(0,'rgba(255,220,150,.95)');g.addColorStop(1,'rgba(255,120,30,0)');ctx.fillStyle=g;ctx.fillRect(x-22,y-22,44,44);ctx.globalCompositeOperation='source-over';
   ember(x,y,{vx:rnd(-8,8),vy:rnd(5,20),m:.8,s:1.5});
-  if(q>=1){nightLog(spirit.text);saveMine({x:spirit.tx,y:spirit.ty,t:spirit.text});
+  if(q>=1){nightLog(spirit.text);if(spirit.sleep)saveSleepStar({x:spirit.tx,y:spirit.ty,t:spirit.text});else saveMine({x:spirit.tx,y:spirit.ty,t:spirit.text});
    toast(TR('becameStar').replace('{t}',spirit.text),2600);
-   mgAfterBurn();
+   if(!spirit.sleep)mgAfterBurn();
    if(!spirit.care&&burned>=10&&!c10){c10=true;setTimeout(()=>toast(TR('constellation'),3000),3200)}
    if(!spirit.care&&burned>=50&&!c50){c50=true;setTimeout(()=>toast(TR('brighter'),3000),3200)}
    spirit=null;if(rec&&nm.on&&nm.rec)$('go').disabled=false;else if(rec)setTimeout(stopRec,3500);else $('go').disabled=false}}

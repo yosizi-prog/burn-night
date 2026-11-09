@@ -63,11 +63,30 @@ h1{margin:0;font-size:22px;letter-spacing:.3em;font-weight:600;text-shadow:0 0 1
 #hf{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff5a1f,#ffd36a);transition:width .3s}
 .wb{background:rgba(0,0,0,.5);border:1px solid rgba(255,200,140,.5);color:var(--fg);border-radius:16px;padding:6px 10px;font:inherit;font-size:13px}
 .wb:disabled{opacity:.35}
+/* mirage: 遠くの街の蜃気楼（ライブ映像） */
+#mg{position:fixed;left:50%;top:28%;transform:translateX(-50%);z-index:3;width:min(62vw,340px);opacity:0;transition:width .6s ease,opacity .6s ease;pointer-events:auto}
+#mg.on{opacity:.92}
+#mg.clear{width:min(88vw,560px);opacity:1}
+#mgf{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;border:1px solid rgba(255,200,140,.55);box-shadow:0 0 30px rgba(255,150,60,.35);filter:blur(9px) saturate(1.15);transition:filter .6s ease;animation:mgSh 7s ease-in-out infinite}
+#mg.clear #mgf{filter:blur(0) saturate(1);animation:none}
+@keyframes mgSh{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(1.018) translateY(-3px)}}
+#mgv,#mgi{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+#mgv{pointer-events:none}
+#mgi{display:none;object-fit:cover}
+#mg.light #mgv{display:none}
+#mg.light #mgi{display:block}
+#mgc{position:absolute;left:8px;bottom:6px;display:flex;gap:8px;align-items:center;font-size:12px;letter-spacing:.06em;text-shadow:0 1px 6px rgba(0,0,0,.8);opacity:0;transition:opacity .4s;pointer-events:none}
+#mg.clear #mgc{opacity:1}
+#mgl{color:#ff5a5a;font-weight:700}
+#mgx{position:absolute;top:-10px;right:-10px;width:28px;height:28px;border-radius:50%;background:rgba(10,8,20,.85);border:1px solid rgba(255,200,140,.6);color:var(--fg);font:inherit;font-size:14px;line-height:1;display:none;cursor:pointer}
+#mg.clear #mgx{display:block}
+#mg[hidden]{display:none}
 </style></head><body>
 <canvas id="c"></canvas>
 <div id="top"><div><h1>Burn Night</h1><p id="sub">手放したいことを書いて、火にくべよう</p><a id="bkv" href="https://punioasis-9mmhfbw2.manus.game">🏕️ 村に戻る</a></div>
 <div><div id="cnt"></div><div id="bs"><button id="wxb" class="mb"></button><button id="tmb" class="mb"></button><button id="nb" class="mb">🌙 一晩</button><button id="snd" class="mb" aria-label="音">🔇 音</button><button id="ltb" class="mb">🍃 軽い</button><button id="lgb" class="mb">🌐 日本語</button></div></div></div>
 <div id="toast"></div>
+<div id="mg" hidden><div id="mgf"><iframe id="mgv" title="live" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" frameborder="0"></iframe><img id="mgi" alt=""></div><div id="mgc"><span id="mgn"></span><span id="mgl"></span></div><button id="mgx" aria-label="閉じる">✕</button></div>
 <div id="intro"><div><h2>Burn Night</h2><p id="ip">手放したいことを紙に書いて、<br>火にくべよう。<br>灰は星になって、夜空に残る。</p><button id="i1" class="nbtn">🔊 音ありで始める</button><button id="i2" class="nbtn sub">音なしで始める</button><button id="i3" class="nbtn sub">🍃 軽いモードで始める</button><p class="terms" id="trm">燃やした言葉は、この端末の夜空にだけ星として残ります。ほかの人と共有されることはありません。</p><p class="village"><a id="bkvI" href="https://punioasis-9mmhfbw2.manus.game">ぷにたちのオアシス村に戻る</a></p></div></div>
 <div id="nr" hidden><h2 id="nrH">夜が明けた</h2><p id="nt"></p><p id="nw"></p><div><button id="n1" class="nbtn">もう一晩</button><button id="n2" class="nbtn sub">閉じる</button></div></div>
 <div id="sc" hidden><span id="st"></span><button id="lk" hidden></button><button id="rp" hidden>🚩</button></div>
@@ -93,7 +112,7 @@ village:'ぷにたちのオアシス村に戻る',villageShort:'🏕️ 村に�
 dawn:'夜が明けた',again:'もう一晩',close:'閉じる',share:'共有',save:'動画を保存',
 cnt1:'燃やした言葉　',cnt2:'<br>みんなの星　',cnt3:'<br>今夜で',cnt4:'夜目',
 letgo:'この言葉を、手放す',fireOut:'火が消えそう…灰の中の炭が赤く残っている',fireLow:'火が小さくなってきた。薪をくべよう',
-becameStar:'「{t}」は星になった',constellation:'空に小さな星座ができた',brighter:'夜空が少し明るくなった',leonid:'今夜はしし座流星群の夜',geminid:'今夜はふたご座流星群の夜',xmas:'今夜はクリスマスの夜',fullmoon:'今夜は満月の夜',
+becameStar:'「{t}」は星になった',constellation:'空に小さな星座ができた',brighter:'夜空が少し明るくなった',leonid:'今夜はしし座流星群の夜',geminid:'今夜はふたご座流星群の夜',xmas:'今夜はクリスマスの夜',fullmoon:'今夜は満月の夜',mirage:'蜃気楼が現れた。タップしてのぞいてみよう',live:'● ライブ',mgTokyo:'東京・渋谷',mgSeoul:'ソウル・漢江',mgTaipei:'台北',mgHK:'香港',mgSydney:'シドニー',
 nightStart:'一晩が始まった。夜明けまでに、燃やしたいものを燃やそう',
 sumBurn:'燃やした言葉　',sumWood:'くべた薪　',sumHeat:'いちばん強い火　',burnedWords:'燃やした言葉：',sep:'、',
 lightOn:'軽いモードにしたよ。火は少しおとなしくなるけど、スマホは熱くなりにくいよ',lightOff:'通常モードに戻したよ',
@@ -104,7 +123,7 @@ starQ:'「{t}」',you:'（あなた）',like:'🫂 わかる ',liked:'🫂 ',nig
 wx:{clear:'🌙 晴れ',rain:'🌧 雨',snow:'❄️ 雪',fog:'🌫 霧'},
 tm:{auto:'🕐 自動',dusk:'🌇 夕暮れ',night:'🌃 夜',deep:'🌌 深夜',dawn:'🌅 明け方'},
 promptYearEnd:'今年の後悔',promptNewYear:'去年の自分',promptMonday:'月曜日',
-prompts:['今日の自分を許せないこと','言えなかった一言','先延ばしにした自分','あの日の後悔','終わらない締切','もう会わない人への気持ち','眠れない夜の不安','比べてしまった誰か','失敗したあの日','期待しすぎた自分','今年の自分への文句','がんばりすぎた自分'],
+prompts:['今日の自分を許せないこと','言えなかった一言','先延ばしにした自分','あの日の後悔','終わらない締切','もう会わない人への気持ち','眠れない夜の不安','比べてしまった誰か','失敗したあの日','期待しすぎた自分','今年の自分への文句','がんばりすぎた自分','言いそびれた「ありがとう」','返せなかった借り','消せない恥ずかしい思い出','あのときの選択','届かなかった気持ち','自分への言い訳','やめられなかった習慣','見なかったふりをしたこと','後回しにした夢','言い過ぎた一言','守れなかった約束','手放せない思い出','言えなかった「ごめんね」','あの日の涙','抱えすぎた仕事','あきらめた夢','言わなかった本音','戻りたいあの日','自分を責めた夜','逃げたあの瞬間','伝えられなかった好き','置き去りにした気持ち','もう戻れない時間','あの人の言葉'],
 seeds:['月曜日','先延ばしにした自分','既読スルー','言えなかった一言','終わらない締切','二度寝','あの日の後悔','不安な夜']},
 en:{lang:'en',name:'English',desc:'Write down what you want to let go of and feed it to the bonfire. The ash becomes a star and stays in the night sky.',og:'Burn Night — Feed what you want to let go of to the fire',
 tonight:"Tonight's prompt: ",ph:'e.g. ',phEnd:' (up to 24 chars)',go:'Burn it',video:'Video',mask:'Hide text',
@@ -115,7 +134,7 @@ village:'Back to Puni Oasis Village',villageShort:'🏕️ Back to the village',
 dawn:'Dawn has come',again:'One more night',close:'Close',share:'Share',save:'Save video',
 cnt1:'Words burned ',cnt2:"<br>Everyone's stars ",cnt3:'<br>Night ',cnt4:'',
 letgo:'Let this word go',fireOut:'The fire is about to go out… a red ember remains in the ash',fireLow:'The fire is getting small. Feed it some wood.',
-becameStar:'"{t}" became a star',constellation:'A small constellation appeared in the sky',brighter:'The night sky grew a little brighter',leonid:'Tonight is the Leonid meteor shower',geminid:'Tonight is the Geminid meteor shower',xmas:'Tonight is Christmas night',fullmoon:'Tonight is a full moon night',
+becameStar:'"{t}" became a star',constellation:'A small constellation appeared in the sky',brighter:'The night sky grew a little brighter',leonid:'Tonight is the Leonid meteor shower',geminid:'Tonight is the Geminid meteor shower',xmas:'Tonight is Christmas night',fullmoon:'Tonight is a full moon night',mirage:'A mirage appeared. Tap to take a look.',live:'● LIVE',mgTokyo:'Shibuya, Tokyo',mgSeoul:'Seoul, Han River',mgTaipei:'Taipei',mgHK:'Hong Kong',mgSydney:'Sydney',
 nightStart:'The night has begun. Burn what you want to let go of before dawn.',
 sumBurn:'Words burned ',sumWood:'Wood fed ',sumHeat:'Strongest fire ',burnedWords:'Words burned: ',sep:', ',
 lightOn:'Light mode on. The fire is a little quieter, but your phone will stay cooler.',lightOff:'Back to normal mode.',
@@ -126,7 +145,7 @@ starQ:'"{t}"',you:' (you)',like:'🫂 I feel you ',liked:'🫂 ',night:'🌙 One
 wx:{clear:'🌙 Clear',rain:'🌧 Rain',snow:'❄️ Snow',fog:'🌫 Fog'},
 tm:{auto:'🕐 Auto',dusk:'🌇 Dusk',night:'🌃 Night',deep:'🌌 Late night',dawn:'🌅 Dawn'},
 promptYearEnd:"This year's regrets",promptNewYear:"Last year's self",promptMonday:'Monday',
-prompts:["Something I can't forgive myself for today",'Words I never said','The self who kept putting things off',"That day's regret",'The never-ending deadline','Feelings for someone I will never meet again','The anxiety of sleepless nights','Someone I compared myself to','That day I failed','The self who expected too much',"Complaints to this year's self",'The self who tried too hard'],
+prompts:["Something I can't forgive myself for today",'Words I never said','The self who kept putting things off',"That day's regret",'The never-ending deadline','Feelings for someone I will never meet again','The anxiety of sleepless nights','Someone I compared myself to','That day I failed','The self who expected too much',"Complaints to this year's self",'The self who tried too hard','The "thank you" I never said','A debt I never repaid',"An embarrassing memory I can't erase",'The choice I made back then','Feelings that never reached them','The excuses I made to myself',"A habit I couldn't quit",'Something I pretended not to see','A dream I kept putting off','Words I said too harshly',"A promise I couldn't keep","A memory I can't let go of",'The "I\'m sorry" I never said','The tears of that day','Too much work I took on','A dream I gave up on','The true feelings I never voiced','That day I wish I could return to','A night I blamed myself','The moment I ran away','The love I never told them about','Feelings I left behind','Time that will never come back',"That person's words"],
 seeds:['Monday','The self who kept putting things off','Left on read','Words I never said','The never-ending deadline','Oversleeping',"That day's regret",'Anxious nights']},
 zh:{lang:'zh-CN',name:'中文',desc:'把想放下的事写在纸上，放进篝火。灰烬化作星星，留在夜空中。',og:'Burn Night — 把想放下的，交给火吧',
 tonight:'今晚的题目：',ph:'例如：',phEnd:'（最多24字）',go:'烧掉',video:'视频',mask:'隐藏文字',
@@ -137,7 +156,7 @@ village:'回到普尼绿洲村',villageShort:'🏕️ 回村庄',
 dawn:'天亮了',again:'再过一夜',close:'关闭',share:'分享',save:'保存视频',
 cnt1:'烧掉的话语　',cnt2:'<br>大家的星星　',cnt3:'<br>今晚是第',cnt4:'夜',
 letgo:'放下这句话',fireOut:'火快要熄灭了……灰烬中还留着红红的炭',fireLow:'火变小了。添些柴吧。',
-becameStar:'「{t}」变成了星星',constellation:'天空中出现了一个小小的星座',brighter:'夜空变得稍微明亮了一点',leonid:'今晚是狮子座流星雨之夜',geminid:'今晚是双子座流星雨之夜',xmas:'今晚是圣诞之夜',fullmoon:'今晚是满月之夜',
+becameStar:'「{t}」变成了星星',constellation:'天空中出现了一个小小的星座',brighter:'夜空变得稍微明亮了一点',leonid:'今晚是狮子座流星雨之夜',geminid:'今晚是双子座流星雨之夜',xmas:'今晚是圣诞之夜',fullmoon:'今晚是满月之夜',mirage:'出现了海市蜃楼。点一下看看吧。',live:'● 直播',mgTokyo:'东京·涩谷',mgSeoul:'首尔·汉江',mgTaipei:'台北',mgHK:'香港',mgSydney:'悉尼',
 nightStart:'一夜开始了。在天亮之前，把想放下的都烧掉吧。',
 sumBurn:'烧掉的话语　',sumWood:'添的柴　',sumHeat:'最旺的火　',burnedWords:'烧掉的话语：',sep:'、',
 lightOn:'已切换到轻量模式。火会安静一点，但手机不容易发烫。',lightOff:'已回到普通模式。',
@@ -148,7 +167,7 @@ starQ:'「{t}」',you:'（你）',like:'🫂 我懂 ',liked:'🫂 ',night:'🌙 
 wx:{clear:'🌙 晴',rain:'🌧 雨',snow:'❄️ 雪',fog:'🌫 雾'},
 tm:{auto:'🕐 自动',dusk:'🌇 黄昏',night:'🌃 夜晚',deep:'🌌 深夜',dawn:'🌅 黎明'},
 promptYearEnd:'今年的遗憾',promptNewYear:'去年的自己',promptMonday:'星期一',
-prompts:['今天无法原谅自己的事','没能说出口的那句话','总是拖延的自己','那天的遗憾','永远做不完的截止日期','对再也不会见的人的心意','睡不着的夜里的不安','拿来比较的那个人','失败的那一天','期待过多的自己','对今年自己的抱怨','太过努力的自己'],
+prompts:['今天无法原谅自己的事','没能说出口的那句话','总是拖延的自己','那天的遗憾','永远做不完的截止日期','对再也不会见的人的心意','睡不着的夜里的不安','拿来比较的那个人','失败的那一天','期待过多的自己','对今年自己的抱怨','太过努力的自己','没能说出口的「谢谢」','没能还清的债','无法抹去的尴尬回忆','那时的选择','没能传达的心意','对自己的借口','戒不掉的习惯','假装没看见的事','一直推迟的梦想','说得太重的话','没能遵守的约定','放不下的回忆','没能说出口的「对不起」','那天的眼泪','揽得太多的工作','放弃了的梦想','没说出口的真心话','想要回去的那一天','自责的那个夜晚','逃跑的那个瞬间','没能传达的喜欢','被丢下的心情','再也回不去的时间','那个人的话'],
 seeds:['星期一','总是拖延的自己','已读不回','没能说出口的那句话','永远做不完的截止日期','睡过头','那天的遗憾','不安的夜']}
 };
 let LANG='ja';
@@ -178,6 +197,7 @@ function applyLang(){
  $('nb').textContent=nm.on?'🌙 '+Math.floor(Math.min(1,nm.t/NL)*100)+'%':TR('night');
  $('wxb').textContent=TR('wx')[wx];
  $('tmb').textContent=TR('tm')[tm];
+ if(mgCity){$('mgn').textContent=TR(mgCity.key);$('mgl').textContent=TR('live')}
  seeds=makeSeeds();rebuild();count();wbtn();
 }
 $('lgb').onclick=()=>{LANG=LANG==='ja'?'en':LANG==='en'?'zh':'ja';applyLang();toast(TR('langSet'))};
@@ -347,7 +367,7 @@ function drawWx(dt,k){
 // extras: tonight prompt, nights, safety, share, meteor
 var days=1;
 try{const s=new Set(JSON.parse(localStorage.getItem('bn_days')||'[]'));s.add(new Date().toDateString());localStorage.setItem('bn_days',JSON.stringify([...s].slice(-400)));days=s.size}catch(e){}
-function tonight(){const d=new Date(),m=d.getMonth()+1,dd=d.getDate();if(m===12&&dd===31)return TR('promptYearEnd');if(m===1&&dd===1)return TR('promptNewYear');if(d.getDay()===1)return TR('promptMonday');const pr=TR('prompts');return pr[(d.getFullYear()*372+m*31+dd)%pr.length]}
+function tonight(){const d=new Date(),m=d.getMonth()+1,dd=d.getDate();if(m===12&&dd===31)return TR('promptYearEnd');if(m===1&&dd===1)return TR('promptNewYear');if(d.getDay()===1)return TR('promptMonday');const pr=TR('prompts');const dayNo=Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/86400000);return pr[dayNo%pr.length]}
 $('sub').textContent=TR('tonight')+tonight();$('t').placeholder=TR('ph')+tonight()+TR('phEnd');
 const NG=['死ね','しね','殺す','ころす','消えろ'],CARE=/死にたい|消えたい|自殺|死のう|しにたい|きえたい|いなくなりたい/;
 function pubText(s){s=s.replace(/https?:\/\/\S+|www\.\S+|[\w.+-]+@[\w-]+\.[\w.]+|\d{6,}/gi,m=>'●'.repeat(m.length));NG.forEach(w=>{s=s.split(w).join('●'.repeat(w.length))});return s}
@@ -424,6 +444,75 @@ function drawMoon(dt,k){
  ctx.beginPath();ctx.arc(mx+r*.25,my+r*.3,r*.16,0,7);ctx.fill();
  ctx.beginPath();ctx.arc(mx+r*.1,my-r*.4,r*.12,0,7);ctx.fill();
  ctx.restore()}
+// mirage: 遠くの街の蜃気楼（ライブ映像）。街の配信が映らなければ出さない
+// 丈夫さの仕組み：サムネイル画像の読み込みで動画の存在を確認する（CORS不要）。
+// だめなら予備の配信→別の街の順に試し、どこも映らなければ蜃気楼は出さない。
+// 映像は蜃気楼が出るときだけ読み込み、消えるときに止める。軽いモードは静止画だけ。
+var CITIES=[
+ {key:'mgTokyo',vids:['dfVK7ld38Ys','DjdUEyjx8GM']},
+ {key:'mgSeoul',vids:['RVvYQghFCXk','kXBzruPvoUk']},
+ {key:'mgTaipei',vids:['pmM2CeSAx0I']},
+ {key:'mgHK',vids:['jHW8N1cCrBM','Z8NTLkEFZjg']},
+ {key:'mgSydney',vids:['5uZa3-RMFos','YCuN0j_cIJk']}
+];
+var mgCity=null,mgVid=null,mgShown=false,mgClear=false,mgBurns=0,mgTimer=null,mgHideTimer=null;
+function mgThumb(vid){return 'https://i.ytimg.com/vi/'+vid+'/hqdefault.jpg'}
+function mgEmbed(vid){return 'https://www.youtube.com/embed/'+vid+'?autoplay=1&mute=1&controls=0&disablekb=1&fs=0&modestbranding=1&playsinline=1'}
+function mgCheck(vid,cb){
+ try{
+  var im=new Image(),done=false;
+  var to=setTimeout(()=>{if(!done){done=true;cb(false)}},5000);
+  im.onload=()=>{if(!done){done=true;clearTimeout(to);cb(true)}};
+  im.onerror=()=>{if(!done){done=true;clearTimeout(to);cb(false)}};
+  im.src=mgThumb(vid);
+ }catch(e){cb(false)}
+}
+function mgTryCity(list,cb){
+ if(!list.length)return cb(null,null);
+ var ci=Math.random()*list.length|0,city=list[ci],rest=list.slice(0,ci).concat(list.slice(ci+1));
+ (function tryVid(i){
+  if(i>=city.vids.length)return mgTryCity(rest,cb);
+  mgCheck(city.vids[i],ok=>{if(ok)cb(city,city.vids[i]);else tryVid(i+1)});
+ })(0);
+}
+function mgShow(){
+ if(mgShown)return;
+ mgTryCity(CITIES.slice(),(city,vid)=>{
+  if(!city)return;
+  if(document.getElementById('intro')||!$('nr').hidden)return;
+  mgCity=city;mgVid=vid;mgShown=true;mgClear=false;
+  var mg=$('mg');
+  $('mgn').textContent=TR(city.key);
+  $('mgl').textContent=TR('live');
+  mg.classList.toggle('light',LIGHT);
+  if(LIGHT){$('mgi').src=mgThumb(vid);$('mgv').removeAttribute('src')}
+  else{$('mgv').src=mgEmbed(vid);$('mgi').removeAttribute('src')}
+  mg.hidden=false;
+  setTimeout(()=>{mg.classList.add('on')},30);
+  toast(TR('mirage'),3200);
+  mgHideTimer=setTimeout(mgHide,60000);
+ });
+}
+function mgHide(){
+ clearTimeout(mgTimer);clearTimeout(mgHideTimer);
+ var mg=$('mg');
+ mg.classList.remove('on');mg.classList.remove('clear');mgClear=false;
+ setTimeout(()=>{mg.hidden=true;try{$('mgv').removeAttribute('src')}catch(e){}try{$('mgi').removeAttribute('src')}catch(e){}mgCity=null;mgVid=null},600);
+}
+function mgToggle(){
+ var mg=$('mg');
+ if(!mgShown||mg.hidden)return;
+ mgClear=!mgClear;
+ mg.classList.toggle('clear',mgClear);
+ clearTimeout(mgHideTimer);
+ mgHideTimer=setTimeout(mgHide,mgClear?90000:60000);
+}
+$('mgf').onclick=()=>mgToggle();
+$('mgx').onclick=e=>{e.stopPropagation();mgHide()};
+function mgAfterBurn(){
+ mgBurns++;
+ if(mgBurns===2&&!mgShown){mgTimer=setTimeout(mgShow,12000)}
+}
 // night mode
 function nightLog(t){if(nm.on){nm.burn++;if(nm.words.length<8)nm.words.push(t)}}
 function startNight(){nm={on:true,fin:false,t:0,words:[],burn:0,wood:0,maxHeat:heat,rec:false,sum:null};$('nr').hidden=true;toast(TR('nightStart'))}
@@ -557,6 +646,7 @@ function frame(now){
   ember(x,y,{vx:rnd(-8,8),vy:rnd(5,20),m:.8,s:1.5});
   if(q>=1){nightLog(spirit.text);saveMine({x:spirit.tx,y:spirit.ty,t:spirit.text});
    toast(TR('becameStar').replace('{t}',spirit.text),2600);
+   mgAfterBurn();
    if(!spirit.care&&burned>=10&&!c10){c10=true;setTimeout(()=>toast(TR('constellation'),3000),3200)}
    if(!spirit.care&&burned>=50&&!c50){c50=true;setTimeout(()=>toast(TR('brighter'),3000),3200)}
    spirit=null;if(rec&&nm.on&&nm.rec)$('go').disabled=false;else if(rec)setTimeout(stopRec,3500);else $('go').disabled=false}}

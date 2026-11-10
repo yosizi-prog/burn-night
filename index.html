@@ -1321,10 +1321,17 @@ function drawMoon(dt,k){
  ctx.beginPath();ctx.arc(mx+r*.25,my+r*.3,r*.16,0,7);ctx.fill();
  ctx.beginPath();ctx.arc(mx+r*.1,my-r*.4,r*.12,0,7);ctx.fill();
  ctx.restore()}
-// mirage: 遠くの街の蜃気楼（ライブ映像）。街の配信が映らなければ出さない
+// mirage: 遠くの焚き火の蜃気楼（ライブ映像）。遠くの誰かも今夜、火を囲んでいる
 // 丈夫さの仕組み：サムネイル画像の読み込みで動画の存在を確認する（CORS不要）。
-// だめなら予備の配信→別の街の順に試し、どこも映らなければ蜃気楼は出さない。
+// まず焚き火の配信を試し、どれも映らなければ街の配信に切り替える。
+// だめなら予備の配信→別の焚き火・別の街の順に試し、どこも映らなければ蜃気楼は出さない。
 // 映像は蜃気楼が出るときだけ読み込み、消えるときに止める。軽いモードは静止画だけ。
+// 焚き火の配信（2026-11-11にライブ・埋め込み可を確認。key:null＝名前ラベルなし、●ライブだけ）
+var BONFIRES=[
+ {key:null,vids:['8fDMAQlgsUc']},
+ {key:null,vids:['mKCieTImjvU']},
+ {key:null,vids:['xtc-Qfxkdpk']}
+];
 var CITIES=[
  {key:'mgTokyo',vids:['dfVK7ld38Ys','DjdUEyjx8GM']},
  {key:'mgSeoul',vids:['RVvYQghFCXk','kXBzruPvoUk']},
@@ -1354,13 +1361,20 @@ function mgTryCity(list,cb){
 }
 function mgShow(){
  if(mgShown)return;
- mgTryCity(CITIES.slice(),(city,vid)=>{
-  if(!city)return;
-  if(document.getElementById('intro')||!$('nr').hidden)return;
-  mgCity=city;mgVid=vid;mgShown=true;mgClear=false;
-  var mg=$('mg');
-  $('mgn').textContent=TR(city.key);
-  $('mgl').textContent=TR('live');
+ mgTryCity(BONFIRES.slice(),(city,vid)=>{
+  if(city)return mgShowFound(city,vid);
+  mgTryCity(CITIES.slice(),(city2,vid2)=>{
+   if(!city2)return;
+   mgShowFound(city2,vid2);
+  });
+ });
+}
+function mgShowFound(city,vid){
+ if(document.getElementById('intro')||!$('nr').hidden)return;
+ mgCity=city;mgVid=vid;mgShown=true;mgClear=false;
+ var mg=$('mg');
+ $('mgn').textContent=city.key?TR(city.key):'';
+ $('mgl').textContent=TR('live');
   mg.classList.toggle('light',LIGHT);
   if(LIGHT){$('mgi').src=mgThumb(vid);$('mgv').removeAttribute('src')}
   else{$('mgv').src=mgEmbed(vid);$('mgi').removeAttribute('src')}
@@ -1368,7 +1382,6 @@ function mgShow(){
   setTimeout(()=>{mg.classList.add('on')},30);
   toast(TR('mirage'),3200);
   mgHideTimer=setTimeout(mgHide,60000);
- });
 }
 function mgHide(){
  clearTimeout(mgTimer);clearTimeout(mgHideTimer);

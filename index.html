@@ -58,6 +58,11 @@ h1{margin:0;font-size:22px;letter-spacing:.3em;font-weight:600;text-shadow:0 0 1
 @media (max-width:400px){.wb,.kb{padding:9px 8px;font-size:12px}#t{padding:10px}h1{font-size:19px}#sub{font-size:11px}#go{padding:0 14px}.mb{padding:8px 10px}}
 #sc{position:fixed;left:50%;top:20%;transform:translateX(-50%);max-width:86%;display:flex;gap:10px;align-items:center;padding:10px 16px;border-radius:22px;background:rgba(10,8,20,.84);border:1px solid rgba(255,200,140,.5);font-size:15px;letter-spacing:.06em;z-index:3}
 #sc[hidden],#lk[hidden]{display:none}
+#give{position:fixed;z-index:6;display:flex;gap:8px;align-items:center;padding:8px 10px;border-radius:18px;background:rgba(10,8,20,.88);border:1px solid rgba(255,200,140,.55);font-size:14px;letter-spacing:.06em}
+#give[hidden]{display:none}
+#give button{background:var(--ember);color:#2a1100;border:0;border-radius:14px;padding:7px 13px;font:inherit;font-size:14px;font-weight:700;white-space:nowrap;cursor:pointer}
+#give button.sub{background:transparent;color:var(--fg);border:1px solid rgba(255,200,140,.5);font-weight:400}
+#give button.x{background:transparent;color:var(--fg);border:1px solid rgba(255,200,140,.4);padding:7px 10px;font-weight:400}
 #lk{background:var(--ember);color:#2a1100;border:0;border-radius:14px;padding:6px 12px;font:inherit;font-size:13px;font-weight:700;white-space:nowrap}
 #lk:disabled{opacity:.55}
 #rp{background:transparent;border:1px solid rgba(255,200,140,.4);color:var(--fg);border-radius:14px;padding:6px 9px;font:inherit;font-size:12px}
@@ -107,6 +112,7 @@ h1{margin:0;font-size:22px;letter-spacing:.3em;font-weight:600;text-shadow:0 0 1
 <div id="intro"><button id="lgbI" class="mb">🌐 日本語</button><div><h2>Burn Night</h2><p id="ip">手放したいことを紙に書いて、<br>火にくべよう。<br>灰は星になって、夜空に残る。</p><button id="i1" class="nbtn">🔊 音ありで始める</button><button id="i2" class="nbtn sub">音なしで始める</button><button id="i3" class="nbtn sub">🍃 軽いモードで始める</button><p class="free" id="fre">無料で遊べます</p><p class="terms" id="trm">燃やした言葉は、この端末の夜空にだけ星として残ります。ほかの人と共有されることはありません。</p><p class="village"><a id="bkvI" href="https://punioasis-9mmhfbw2.manus.game">ぷにたちのオアシス村に戻る</a></p><p class="village"><a id="psvI" href="https://punisurvivor-aetsview.manus.space/">ぷにサバイバーで遊ぶ</a></p></div></div>
 <div id="nr" hidden><h2 id="nrH">夜が明けた</h2><p id="nt"></p><p id="nw"></p><div><button id="n1" class="nbtn">もう一晩</button><button id="n2" class="nbtn sub">閉じる</button></div></div>
 <div id="sc" hidden><span id="st"></span><button id="lk" hidden></button><button id="rp" hidden>🚩</button></div>
+<div id="give" hidden><button id="gvEat"></button><button id="gvGive" class="sub"></button><button id="gvX" class="x">✕</button></div>
 <div id="vid" hidden><video id="pv" playsinline loop muted autoplay></video><div id="vb"><button id="shr" class="nbtn">共有</button><button id="sv">動画を保存</button><button id="cl">閉じる</button></div><p id="vm"></p></div>
 <div id="wd"><div id="hb" aria-label="火の強さ"><i id="hf"></i></div><button class="wb" data-w="twig"></button><button class="wb" data-w="log"></button><button class="wb" data-w="big"></button><button class="wb" data-w="aroma"></button><button class="kb" id="kt" aria-label="やかん">🍵</button></div>
 <div id="ui"><label id="rl"><input type="checkbox" id="rc" checked><span id="rlT">動画</span></label><label class="rl2"><input type="checkbox" id="mk"><span id="mkT">伏せ字</span></label><input id="t" maxlength="24" placeholder="燃やしたいこと（24字まで）" autocomplete="off"><button id="go">燃やす</button></div>
@@ -139,7 +145,7 @@ becameStar:'「{t}」は星になった',constellation:'空に小さな星座が
 sleep:'🌙 おやすみ',sleepOnBtn:'🌙 おやすみ ✓',sleepOn:'おやすみモードにしたよ。火は自動でくべるし、やさしい言葉が星になるよ',sleepOff:'おやすみモードをやめたよ',
 stream:'📺 配信',streamOnBtn:'📺 配信 ✓',streamOn:'配信モードにしたよ。画面がすっきりして、火と夜空だけになるよ',streamOff:'配信モードをやめたよ',streamExit:'配信をやめる',
 sleepWords:['おやすみ','今日もおつかれさま','ゆっくり休んでね','いい夢を','明日もいい日になりますように','静かな夜'],
-fishCaught:'ぷにが「{t}」を釣ってきたよ！タップして焼こう',fishGrilled:'おいしそうに焼けたよ',fishEaten:'いただきます',
+fishCaught:'ぷにが「{t}」を釣ってきたよ！タップして焼こう',fishGrilled:'おいしそうに焼けたよ',fishEaten:'いただきます',giveEat:'食べる',giveTo:'{t}にあげる',thanks:'ありがとう',
 foxVisit:'キツネが訪れた',owlVisit:'フクロウが訪れた',deerVisit:'シカが訪れた',
 nightStart:'一晩が始まった。夜明けまでに、燃やしたいものを燃やそう',
 sumBurn:'燃やした言葉　',sumWood:'くべた薪　',sumHeat:'いちばん強い火　',burnedWords:'燃やした言葉：',sep:'、',
@@ -169,7 +175,7 @@ becameStar:'"{t}" became a star',constellation:'A small constellation appeared i
 sleep:'🌙 Sleep',sleepOnBtn:'🌙 Sleep ✓',sleepOn:'Sleep mode on. The fire feeds itself, and gentle words will become stars.',sleepOff:'Sleep mode off.',
 stream:'📺 Stream',streamOnBtn:'📺 Stream ✓',streamOn:'Stream mode on. The screen is clean — just the fire and the night sky.',streamOff:'Stream mode off.',streamExit:'Exit stream',
 sleepWords:['Good night','Rest well','Sweet dreams','Sleep tight','You did well today','Quiet night'],
-fishCaught:'Puni caught a "{t}"! Tap to grill it.',fishGrilled:'It grilled beautifully!',fishEaten:'Bon appétit!',
+fishCaught:'Puni caught a "{t}"! Tap to grill it.',fishGrilled:'It grilled beautifully!',fishEaten:'Bon appétit!',giveEat:'Eat it',giveTo:'Give to {t}',thanks:'Thank you!',
 foxVisit:'A fox has come to visit',owlVisit:'An owl has come to visit',deerVisit:'A deer has come to visit',
 nightStart:'The night has begun. Burn what you want to let go of before dawn.',
 sumBurn:'Words burned ',sumWood:'Wood fed ',sumHeat:'Strongest fire ',burnedWords:'Words burned: ',sep:', ',
@@ -199,7 +205,7 @@ becameStar:'「{t}」变成了星星',constellation:'天空中出现了一个小
 sleep:'🌙 睡眠',sleepOnBtn:'🌙 睡眠 ✓',sleepOn:'已开启晚安模式。火会自动添柴，温柔的话语会变成星星。',sleepOff:'已关闭晚安模式。',
 stream:'📺 直播',streamOnBtn:'📺 直播 ✓',streamOn:'已开启直播模式。画面变得简洁，只剩下火和夜空。',streamOff:'已关闭直播模式。',streamExit:'退出直播',
 sleepWords:['晚安','好好休息','做个好梦','今天辛苦了','愿你有个好梦','安静的夜'],
-fishCaught:'普尼钓到了「{t}」！点一下烤了吧。',fishGrilled:'烤得好香啊',fishEaten:'开动了！',
+fishCaught:'普尼钓到了「{t}」！点一下烤了吧。',fishGrilled:'烤得好香啊',fishEaten:'开动了！',giveEat:'吃掉',giveTo:'给{t}',thanks:'谢谢！',
 foxVisit:'狐狸来访了',owlVisit:'猫头鹰来访了',deerVisit:'鹿来访了',
 nightStart:'一夜开始了。在天亮之前，把想放下的都烧掉吧。',
 sumBurn:'烧掉的话语　',sumWood:'添的柴　',sumHeat:'最旺的火　',burnedWords:'烧掉的话语：',sep:'、',
@@ -830,13 +836,44 @@ function fishTap(x,y){
  }else if(fish.st==='grilled'){
   const[sx,sy]=skewerPos();
   if(Math.hypot(x-sx,y-sy)<48){
-   fish.st='none';fish.sp=null;
-   toast(TR('fishEaten'),2600);
-   for(let i=0;i<10;i++)ember(sx+rnd(-20,20),sy+rnd(-10,10),{vy:-rnd(30,80),vx:rnd(-20,20),m:1.2,h:rnd(30,50)});
-   return true;
+   if(visitingAnimal()){openGive();return true} // 動物が来ているときは食べるかあげるか選ぶ
+   eatFish();return true;
   }
  }
  return false;
+}
+// 動物が今来ているか（滞在中・歩いてくる途中・現れる途中）。帰りかけのときはもう選ばせない
+function visitingAnimal(){return animal.sp&&(animal.st==='stay'||animal.st==='walkin'||animal.st==='fadein')}
+// 焼けた魚を食べる（今まで通り：トースト＋金色の残り火）
+function eatFish(){
+ const[sx,sy]=skewerPos();
+ fish.st='none';fish.sp=null;
+ toast(TR('fishEaten'),2600);
+ for(let i=0;i<10;i++)ember(sx+rnd(-20,20),sy+rnd(-10,10),{vy:-rnd(30,80),vx:rnd(-20,20),m:1.2,h:rnd(30,50)});
+}
+// 焼けた魚の選択ポップアップの置き場所（火の上の開けた場所。火の芯・紙には重ならないよう、魚の上・火の芯より上にする）
+function givePlace(w,h){
+ const[sx,sy]=skewerPos();
+ let left=sx-w/2,top=sy-70-h;
+ left=Math.max(8,Math.min(W-w-8,left));
+ top=Math.max(8,Math.min(H-h-8,top));
+ return{left,top};
+}
+function openGive(){
+ giveOpen=true;
+ $('gvEat').textContent=TR('giveEat');
+ $('gvGive').textContent=TR('giveTo').replace('{t}',animalName(animal.sp));
+ const g=$('give'),r=givePlace(230,52);
+ g.style.left=r.left+'px';g.style.top=r.top+'px';g.hidden=false;
+}
+function closeGive(){giveOpen=false;$('give').hidden=true;}
+$('gvEat').onclick=()=>{closeGive();eatFish();};
+$('gvGive').onclick=()=>{closeGive();giveFish();};
+$('gvX').onclick=()=>{closeGive();}; // 選ばずに閉じる。魚は焼けたまま
+// 焼けた魚を動物にあげる（魚はなくなる。動物が喜んで「ありがとう」と言う。音は出さない。ごほうび・記録の変化なし）
+function giveFish(){
+ fish.st='none';fish.sp=null;
+ animal.happy=4;thanksT=0.001;
 }
 // レアな動物の訪問（長い夜に一人で寂しいとき、たまに動物が訪れてそばにいてくれる）
 // 最初の1回は5分後、その後は30〜60分に1回、3種類の中からランダムに1匹。
@@ -860,15 +897,17 @@ let foxImg={body:new Image(),walk:new Image(),tail:new Image()},foxReady={body:f
 foxImg.body.onload=()=>{foxReady.body=true};foxImg.body.src=FOX_SRC.body;
 foxImg.walk.onload=()=>{foxReady.walk=true};foxImg.walk.src=FOX_SRC.walk;
 foxImg.tail.onload=()=>{foxReady.tail=true};foxImg.tail.src=FOX_SRC.tail;
-let animal={sp:null,st:'none',t:0,a:0,stay:0,wx:0}; // st: none/fadein(現れる)/stay(滞在)/fadeout(帰る)/walkin(森から歩いてくる・キツネだけ)/walkout(森へ帰る・キツネだけ)。wx: 歩きのx位置
+let animal={sp:null,st:'none',t:0,a:0,stay:0,wx:0,happy:0}; // st: none/fadein(現れる)/stay(滞在)/fadeout(帰る)/walkin(森から歩いてくる・キツネだけ)/walkout(森へ帰る・キツネだけ)。wx: 歩きのx位置。happy: 魚をもらって喜んでいる残り時間（秒）
+let giveOpen=false,thanksT=0; // give: 焼けた魚を食べるか動物にあげるかの選択ポップアップが開いているか。thanksT: 「ありがとう」の吹き出しの経過時間（0=出ていない）
 let animalT=300; // 最初の訪問は5分後、その後は30〜60分ランダム
 function updateAnimals(dt){
  if(document.getElementById('intro'))return; // イントロ中はタイマーを進めない
+ if(animal.happy>0)animal.happy=Math.max(0,animal.happy-dt);
  if(animal.st==='none'){
   animalT-=dt;
   if(animalT<=0){
    animal.sp=ANIMALS[Math.random()*ANIMALS.length|0];
-   animal.t=0;animal.stay=rnd(180,300);
+   animal.t=0;animal.stay=rnd(180,300);animal.happy=0;
    if(animal.sp.id==='fox'){animal.st='walkin';animal.a=1;animal.wx=W*.98;} // キツネは森の奥（右端）から歩いてくる。フェードインはしない
    else{animal.st='fadein';animal.a=0;}
    toast(TR(animal.sp.visit),4000); // 静かに現れる（音は出さない）
@@ -893,6 +932,7 @@ function updateAnimals(dt){
   animal.t+=dt;animal.a=Math.max(0,1-animal.t/3);
   if(animal.t>=3){animal.st='none';animal.sp=null;animal.a=0;animalT=rnd(1800,3600);}
  }
+ if(animal.st==='none'&&giveOpen)closeGive(); // 動物が帰ったら選択も閉じる
 }
 function drawAnimals(dt,k){
  if(!animal.sp||animal.st==='none')return;
@@ -914,20 +954,22 @@ function drawFoxNew(dt,k){
  if(!foxReady.body){drawFox(x,y,k);return;} // 画像がまだ読み込めていなければ昔の平らなキツネ
  const s=k,stay=animal.st==='stay';
  const bob=walking?Math.abs(Math.sin(T*9))*2.2*s:0;
+ const happy=animal.happy>0; // 魚をもらって喜んでいる
+ const hb=happy&&stay?Math.abs(Math.sin(T*6))*2*s:0; // 喜んでぴょこぴょこ跳ねる
  const flip=animal.st==='walkout'?-1:1; // 帰るときは右を向く
  const grill=fish.st==='grill'; // 魚が焼けている
  ctx.save();
- ctx.translate(x,y-bob);
+ ctx.translate(x,y-bob-hb);
  ctx.scale(flip,1);
  // 尻尾（体の後ろに描く。ゆっくり振る。魚が焼けていると少し持ち上がる）
  if(foxReady.tail){
-  const wag=Math.sin(T*.9)*.13+(grill?-.18:0);
+  const wag=Math.sin(T*(happy?2.6:.9))*(happy?.22:.13)+(grill?-.18:0); // 喜ぶと尻尾を速く大きく振る
   ctx.save();ctx.translate(10*s,-16*s);ctx.rotate(wag);
   ctx.drawImage(foxImg.tail,-2*s,-23*s,30*s,23*s);ctx.restore();
  }
  // 体（歩くときは歩く姿、座るときは座った姿。耳をぴくっとさせる：たまに体全体をほんの少し傾ける）
- const lean=stay&&grill?-.05:0; // 魚が焼けていると火の方に体を傾ける（興味を示す）
- const tw2=stay&&(T%8)<.35?-.03:0;
+ const lean=stay&&(grill||happy)?-.05:0; // 魚が焼けていると火の方に体を傾ける（興味を示す）。喜んでいるときも火の方を向く
+ const tw2=stay&&((happy?(T%2.5)<.4:(T%8)<.35))?-.03:0; // 喜ぶと耳をぴくっとさせる回数が増える
  const im=walking?(foxReady.walk?foxImg.walk:foxImg.body):foxImg.body;
  const bw=walking?33*s:34*s,bh=walking?44*s:56*s;
  ctx.save();ctx.rotate(lean+tw2+(walking?Math.sin(T*9)*.02:0));
@@ -990,7 +1032,8 @@ function drawFox(x,y,k){
 }
 function drawOwl(x,y,k){
  const s=k;
- ctx.save();ctx.translate(x,y);ctx.rotate(Math.sin(T*.25)*.04); // 首をほんの少し動かす
+ const happy=animal.happy>0; // 魚をもらって喜んでいる（目を細めて喜ぶ）
+ ctx.save();ctx.translate(x,y);ctx.rotate(Math.sin(T*(happy?1.2:.25))*(happy?.06:.04)); // 喜ぶと首を少し大きくゆらす
  // 枝
  ctx.strokeStyle='#4a3520';ctx.lineWidth=3.5*s;ctx.lineCap='round';
  ctx.beginPath();ctx.moveTo(-26*s,12*s);ctx.lineTo(26*s,10*s);ctx.stroke();
@@ -1010,6 +1053,12 @@ function drawOwl(x,y,k){
  ctx.beginPath();ctx.moveTo(4*s,-17*s);ctx.lineTo(8*s,-25*s);ctx.lineTo(10*s,-17*s);ctx.closePath();ctx.fill();
  // 目（大きく、ゆっくりまばたきする）
  const blink=(T%5)<.18;
+ if(happy){
+  // 喜んで目を細める（うれしい閉じ目）
+  ctx.strokeStyle='#2a2018';ctx.lineWidth=1.5*s;ctx.lineCap='round';
+  ctx.beginPath();ctx.arc(-6*s,-8*s,3*s,Math.PI*1.15,Math.PI*1.85);ctx.stroke();
+  ctx.beginPath();ctx.arc(6*s,-8*s,3*s,Math.PI*1.15,Math.PI*1.85);ctx.stroke();
+ }else{
  ctx.fillStyle='#f5f0e6';
  ctx.beginPath();ctx.arc(-6*s,-8*s,5*s,0,7);ctx.fill();
  ctx.beginPath();ctx.arc(6*s,-8*s,5*s,0,7);ctx.fill();
@@ -1025,6 +1074,7 @@ function drawOwl(x,y,k){
   ctx.beginPath();ctx.arc(-5*s,-9*s,1*s,0,7);ctx.fill();
   ctx.beginPath();ctx.arc(7*s,-9*s,1*s,0,7);ctx.fill();
  }
+ } // happy の else おわり
  // くちばし（小さな三角、オレンジ）
  ctx.fillStyle='#d98a3a';
  ctx.beginPath();ctx.moveTo(-3*s,-4*s);ctx.lineTo(3*s,-4*s);ctx.lineTo(0,0);ctx.closePath();ctx.fill();
@@ -1037,7 +1087,8 @@ function drawDeer(x,y,k){
  const s=k;
  ctx.save();ctx.translate(x,y);
  // 首の上げ下げ（水を飲んだり、たまに頭を上げたり、ゆっくり）
- const bob=Math.sin(T*.45)*.1,look=(Math.sin(T*.23)>0.92)?.2:0;
+ const happy=animal.happy>0; // 魚をもらって喜んでいる（頭を上げて尻尾を振る）
+ const bob=Math.sin(T*.45)*.1,look=happy?.25:(Math.sin(T*.23)>0.92)?.2:0;
  // 脚（4本、細い）
  ctx.strokeStyle='#7a5a34';ctx.lineWidth=3*s;ctx.lineCap='round';
  ctx.beginPath();
@@ -1072,7 +1123,30 @@ function drawDeer(x,y,k){
  ctx.restore();
  // 尻尾（小さな白い尻尾）
  ctx.fillStyle='#f5f0e6';
- ctx.beginPath();ctx.ellipse(23*s,-38*s,4*s,3*s,.5,0,7);ctx.fill();
+ ctx.beginPath();ctx.ellipse(23*s+(happy?Math.sin(T*6)*2*s:0),-38*s,4*s,3*s,.5,0,7);ctx.fill();
+ ctx.restore();
+}
+// ありがとうの吹き出し（魚をもらった動物の近くに小さく出す。3秒で消える。音は出さない）
+// 動物の位置に合わせて吹き出しの場所を決める。紙の待つ場所（画面中央上）や火の芯には重ならない
+function thanksAnchor(k){
+ if(animal.sp.id==='fox'){const[tx,ty]=animalSpot(animal.sp);const walking=animal.st==='walkin'||animal.st==='walkout';return[walking?animal.wx:tx,ty];}
+ if(animal.sp.id==='owl'){const[x,y]=animalSpot(animal.sp);return[x+20*k,y+48*k];}
+ const[x,y]=animalSpot(animal.sp);return[x,y];
+}
+function updateThanks(dt){if(thanksT>0){thanksT+=dt;if(thanksT>=3)thanksT=0;}}
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function drawThanks(k){
+ if(!thanksT||!animal.sp)return;
+ const[ax,ay]=thanksAnchor(k);
+ const a=thanksT<.2?thanksT/.2:thanksT>2.5?(3-thanksT)/.5:1;
+ const t=TR('thanks'),bw=(t.length*17+30)*k,bh=34*k;
+ let bx=ax-bw/2,by=ay-78*k-bh;
+ bx=Math.max(6,Math.min(W-bw-6,bx));by=Math.max(6,by);
+ ctx.save();ctx.globalAlpha=a;
+ ctx.fillStyle='#f5f0e6';rr(bx,by,bw,bh,10*k);ctx.fill();
+ ctx.beginPath();ctx.moveTo(ax-6*k,by+bh-1);ctx.lineTo(ax+6*k,by+bh-1);ctx.lineTo(ax,by+bh+10*k);ctx.closePath();ctx.fill();
+ ctx.fillStyle='#2a1a0c';ctx.font='bold '+Math.round(15*k)+'px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+ ctx.fillText(t,ax,by+bh/2);
  ctx.restore();
 }
 $('shr').onclick=async()=>{if(!vblob)return;const ext=vblob.type.includes('mp4')?'mp4':'webm';
@@ -1319,6 +1393,7 @@ $('lk').onclick=()=>{const s=sel;if(!s||!s.id||!db||myLikes.has(s.id)||s.mine)re
 // tap stars / drag the paper to the fire
 let drag=null;
 cv.addEventListener('pointerdown',e=>{
+ if(giveOpen){closeGive();return;} // 選択中のタップはポップアップを閉じるだけ（魚は焼けたまま）
  if(fishTap(e.clientX,e.clientY))return; // 魚（板の上・焼けた魚）が先
  if(paper&&paper.t<1.4){
   if(Math.abs(e.clientX-paper.cx)<100&&Math.abs(e.clientY-paper.cy)<180){drag={dx:e.clientX-paper.cx,dy:e.clientY-paper.cy};paper.px=paper.cx;paper.py=paper.cy;paper.drag=true;return}
@@ -1443,12 +1518,14 @@ function frame(now){
  ash=ash.filter(a=>{a.l+=dt;if(a.l>a.m)return false;const q=a.l/a.m;a.x+=(a.vx+Math.sin(T*3+a.p)*24)*dt;a.y+=a.vy*dt;a.r+=a.vr*dt;
   ctx.save();ctx.translate(a.x,a.y);ctx.rotate(a.r);ctx.fillStyle=`rgba(150,140,125,${.55*(1-q)})`;ctx.fillRect(-a.s/2,-a.s/4,a.s,a.s/2);ctx.restore();return true});
  drawWx(dt,k);drawXmas(dt,k);drawMoon(dt,k);drawLightning();
+ updateThanks(dt);
  if(rec){const d=cv.width/W,ar=720/1280;let cw=W,ch=W/ar;if(ch>H){ch=H;cw=H*ar}
   const[fx]=P(CFG.fireX,CFG.fireMid),cx=Math.min(W-cw,Math.max(0,fx-cw/2)),cy=(H-ch)*.5;
   rctx.drawImage(cv,cx*d,cy*d,cw*d,ch*d,0,0,720,1280);
   if(nm.sum){rctx.fillStyle='rgba(5,6,15,.55)';rctx.fillRect(0,0,720,1280);rctx.fillStyle='#ffe9cf';rctx.textAlign='center';rctx.font='600 54px serif';rctx.fillText(TR('dawn'),360,430);rctx.font='34px serif';nm.sum.forEach((l,i)=>rctx.fillText(l,360,520+i*58))}
   rctx.fillStyle='rgba(0,0,0,.35)';rctx.fillRect(0,1170,720,110);rctx.fillStyle='#ffe9cf';rctx.font='600 36px serif';rctx.textAlign='center';rctx.fillText('Burn Night',360,1236)}
  if(skyShotPending)skyShotDone() // 空の写真：紙なしで描いた直後にキャンバスを撮る
+ drawThanks(k); // ありがとうの吹き出し（写真には写らない。最後に描くので紙の手前に出る）
  requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
 (async()=>{try{

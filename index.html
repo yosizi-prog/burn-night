@@ -574,7 +574,7 @@ function updateSleep(dt,k){
 }
 // ぷにの釣り（魚のキット CC0 の12種を2Dの魚として使う。3DのGLBは使わない）
 // 池の真ん中にぷにが座って釣りをする。1〜3分後に魚を釣ってきて、火のそばの板に置く。
-// プレイヤーがタップすると串に刺さって火の上で焼け、約12秒できつね色になる。焼けた魚をタップで食べる。
+// プレイヤーがタップすると金網グリルにのせて火の上で焼け、約12秒できつね色になる。焼けた魚をタップで食べる。
 var FISH=[
  {id:'aji',ja:'アジ',en:'Horse Mackerel',zh:'竹荚鱼',c:[184,196,208]},
  {id:'saba',ja:'サバ',en:'Mackerel',zh:'鲭鱼',c:[127,176,192]},
@@ -615,7 +615,7 @@ function updateFish(dt){
   puni.x=sx;puni.y=sy;
   fishT-=dt;
   if(fishT<=0){
-   if(fish.st!=='none'){fishT=30} // 板・串に魚があるときは、食いつかない（30秒後にもう一度）
+   if(fish.st!=='none'){fishT=30} // 板・網に魚があるときは、食いつかない（30秒後にもう一度）
    else{puni.st='bite';puni.t=0;popOnce();}
   }
  }else if(puni.st==='bite'){puni.t+=dt;if(puni.t>=.8){puni.st='reel';puni.t=0;}}
@@ -637,7 +637,7 @@ function updateFish(dt){
  // 焼く（ジューという音と湯気）
  if(fish.st==='grill'){
   fish.grill+=dt;
-  if(Math.random()<.4)fsteam.push({x:rnd(-8,8),y:0,vx:rnd(-3,3),vy:-rnd(16,30),l:0,m:rnd(1,2),r:rnd(2,4),p:rnd(0,6)});
+  if(Math.random()<(LIGHT?.2:.4))fsteam.push({x:rnd(-26,26),y:0,vx:rnd(-3,3),vy:-rnd(16,30),l:0,m:rnd(1,2),r:rnd(2,4),p:rnd(0,6)});
   if(Math.random()<.1)sizzlePop();
   if(fish.grill>=12){fish.st='grilled';toast(TR('fishGrilled'),3000);}
  }else if(fish.st==='grilled'){
@@ -699,6 +699,56 @@ function drawFishShape(x,y,sp,q,k){
  // 焼き目（きつね色になったら、こんがりした線）
  if(q>.5){ctx.strokeStyle=`rgba(90,50,10,${.5*q})`;ctx.lineWidth=1.5;
   for(let i=-1;i<=1;i++){ctx.beginPath();ctx.moveTo(i*8*k-3*k,-Hh*.7);ctx.lineTo(i*8*k+3*k,Hh*.7);ctx.stroke();}}
+ ctx.restore();
+}
+function drawGrillFish(x,y,sp,q,k){
+ // q: 0=生、1=きつね色。焼くときだけの大きな魚（約2.2倍）：金網グリルの上にのせて、参考画像のように立派に見せる
+ // 板の上の魚とぷにが運ぶ魚は drawFishShape の小さいまま。色の変わり方は drawFishShape と同じ（魚種の色→きつね色）
+ const c=sp.c,gc=[198,138,46];
+ const r=Math.round(c[0]+(gc[0]-c[0])*q),g=Math.round(c[1]+(gc[1]-c[1])*q),b=Math.round(c[2]+(gc[2]-c[2])*q);
+ const L=58*k,Hh=20*k;
+ ctx.save();ctx.translate(x,y);
+ // 金網グリル（魚の下）：横棒4本＋縦棒2本＋外枠
+ ctx.lineCap='round';
+ ctx.strokeStyle='#3f3f46';ctx.lineWidth=2.5*k;
+ for(let i=-1.5;i<=1.5;i++){ctx.beginPath();ctx.moveTo(-84*k,i*8*k);ctx.lineTo(64*k,i*8*k);ctx.stroke();}
+ ctx.strokeStyle='#55555e';ctx.lineWidth=2*k;
+ ctx.beginPath();ctx.moveTo(-70*k,-14*k);ctx.lineTo(-70*k,14*k);ctx.moveTo(50*k,-14*k);ctx.lineTo(50*k,14*k);ctx.stroke();
+ ctx.strokeStyle='#6a6a72';ctx.lineWidth=3*k;
+ ctx.beginPath();ctx.moveTo(-84*k,-14*k);ctx.lineTo(64*k,-14*k);ctx.moveTo(-84*k,14*k);ctx.lineTo(64*k,14*k);ctx.stroke();
+ // 尾びれ（フォーク型）
+ ctx.fillStyle=`rgb(${r},${g},${b})`;
+ ctx.beginPath();ctx.moveTo(-L*.78,-Hh*.2);ctx.lineTo(-L*1.32,-Hh*1.05);ctx.lineTo(-L*1.12,-Hh*.1);ctx.closePath();ctx.fill();
+ ctx.beginPath();ctx.moveTo(-L*.78,Hh*.2);ctx.lineTo(-L*1.32,Hh*1.05);ctx.lineTo(-L*1.12,Hh*.1);ctx.closePath();ctx.fill();
+ // 体（楕円）
+ ctx.beginPath();ctx.ellipse(0,0,L,Hh,0,0,7);ctx.fill();
+ // 腹（明るい腹のカーブ）
+ const br=Math.round(r+(245-r)*.45),bg2=Math.round(g+(225-g)*.45),bb=Math.round(b+(190-b)*.45);
+ ctx.fillStyle=`rgba(${br},${bg2},${bb},.8)`;
+ ctx.beginPath();ctx.ellipse(0,Hh*.38,L*.82,Hh*.5,0,0,7);ctx.fill();
+ // 背びれ
+ ctx.fillStyle=`rgb(${r},${g},${b})`;
+ ctx.beginPath();ctx.moveTo(-L*.28,-Hh*.72);ctx.lineTo(L*.18,-Hh*.72);ctx.lineTo(-L*.05,-Hh*1.55);ctx.closePath();ctx.fill();
+ // 胸びれ
+ ctx.beginPath();ctx.moveTo(L*.28,Hh*.5);ctx.lineTo(L*.48,Hh*.42);ctx.lineTo(L*.3,Hh*1.02);ctx.closePath();ctx.fill();
+ // えらの線
+ ctx.strokeStyle='rgba(60,30,10,.35)';ctx.lineWidth=1.5*k;
+ ctx.beginPath();ctx.arc(L*.42,0,Hh*.68,-1.1,1.1);ctx.stroke();
+ // 目
+ ctx.fillStyle='#1a1a1a';ctx.beginPath();ctx.arc(L*.6,-Hh*.18,3.5*k,0,7);ctx.fill();
+ ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(L*.6+1.2*k,-Hh*.18-1.2*k,1.2*k,0,7);ctx.fill();
+ // うろこ（通常モードだけ。軽いモードはすっきりさせる）
+ if(!LIGHT){ctx.strokeStyle='rgba(70,40,15,.28)';ctx.lineWidth=1*k;
+  for(let row=-1;row<=1;row++)for(let col=0;col<5;col++){
+   ctx.beginPath();ctx.arc(-L*.62+col*L*.26,row*Hh*.45,5*k,.15*Math.PI,.85*Math.PI);ctx.stroke();}}
+ // 焼き目（きつね色になったら、こんがりした線）
+ if(q>.5){ctx.strokeStyle=`rgba(90,50,10,${.5*q})`;ctx.lineWidth=2.5*k;
+  for(let i=-1;i<=2;i++){ctx.beginPath();ctx.moveTo(i*16*k-5*k,-Hh*.72);ctx.lineTo(i*16*k+5*k,Hh*.72);ctx.stroke();}}
+ // 焦げ（焼き上がりに近づいたら、ところどころ濃く）
+ if(q>.75){ctx.fillStyle='rgba(40,20,8,.35)';
+  ctx.beginPath();ctx.ellipse(-L*.4,-Hh*.3,6*k,3.5*k,.3,0,7);ctx.fill();
+  ctx.beginPath();ctx.ellipse(L*.1,Hh*.35,5*k,3*k,-.2,0,7);ctx.fill();
+  ctx.beginPath();ctx.ellipse(L*.45,-Hh*.45,4.5*k,3*k,.2,0,7);ctx.fill();}
  ctx.restore();
 }
 function drawPuni(dt,k){
@@ -764,11 +814,9 @@ function drawFish(dt,k){
   ctx.fillStyle='#8a6a40';ctx.beginPath();ctx.ellipse(x,y+6*k,34*k,6*k,0,0,7);ctx.fill();
   drawFishShape(x,y,fish.sp,0,k);
  }else{
-  // 串の上（火の上）
+  // 網の上（火の上）：大きな魚を金網グリルにのせて焼く
   const[sx,sy]=skewerPos();x=sx;y=sy;fish.x=x;fish.y=y;
-  ctx.strokeStyle='#5a3a1e';ctx.lineWidth=3*k;ctx.lineCap='round';
-  ctx.beginPath();ctx.moveTo(x-44*k,y);ctx.lineTo(x+44*k,y);ctx.stroke();
-  drawFishShape(x,y,fish.sp,q,k);
+  drawGrillFish(x,y,fish.sp,q,k);
   // 湯気
   fsteam=fsteam.filter(a=>{a.l+=dt;if(a.l>a.m)return false;const qq=a.l/a.m;a.x+=(a.vx+Math.sin(T*2+a.p)*8)*dt;a.y+=a.vy*dt;
    ctx.fillStyle=`rgba(230,235,245,${.25*(1-qq)})`;ctx.beginPath();ctx.arc(x+a.x,y-10*k+a.y,a.r*(1+qq),0,7);ctx.fill();return true});

@@ -132,7 +132,7 @@ freeToPlay:'無料で遊べます',
 skyPhoto:'空の写真',skyPhotoShared:'空の写真を共有したよ',skyPhotoSaved:'空の写真を保存したよ',skyPhotoFailed:'写真が撮れなかったよ',
 village:'ぷにたちのオアシス村に戻る',villageShort:'🏕️ 村に戻る',
 puniSurvivor:'ぷにサバイバーで遊ぶ',puniSurvivorShort:'🎮 ぷにサバイバー',
-dawn:'夜が明けた',again:'もう一晩',close:'閉じる',share:'共有',save:'動画を保存',
+dawn:'夜が明けた',again:'もう一晩',close:'閉じる',fireStrength:'火の強さ',writeWord:'言葉を書く',sound:'音',share:'共有',save:'動画を保存',
 cnt1:'燃やした言葉　',cnt2:'<br>みんなの星　',cnt3:'<br>今夜で',cnt4:'夜目',
 letgo:'この言葉を、手放す',fireOut:'火が消えそう…灰の中の炭が赤く残っている',fireLow:'火が小さくなってきた。薪をくべよう',
 becameStar:'「{t}」は星になった',constellation:'空に小さな星座ができた',brighter:'夜空が少し明るくなった',leonid:'今夜はしし座流星群の夜',geminid:'今夜はふたご座流星群の夜',xmas:'今夜はクリスマスの夜',fullmoon:'今夜は満月の夜',mirage:'蜃気楼が現れた。タップしてのぞいてみよう',live:'● ライブ',mgTokyo:'東京・渋谷',mgSeoul:'ソウル・漢江',mgTaipei:'台北',mgHK:'香港',mgSydney:'シドニー',kettle:'🍵 やかん',boiled:'お湯が沸いたよ',kettlePut:'やかんを火にかけたよ。お湯が沸くのを待とう',
@@ -162,7 +162,7 @@ freeToPlay:'Free to play',
 skyPhoto:'Sky photo',skyPhotoShared:'Shared a photo of the sky',skyPhotoSaved:'Saved a photo of the sky',skyPhotoFailed:'Couldn\'t take a photo',
 village:'Back to Puni Oasis Village',villageShort:'🏕️ Back to the village',
 puniSurvivor:'Play Puni Survivor',puniSurvivorShort:'🎮 Puni Survivor',
-dawn:'Dawn has come',again:'One more night',close:'Close',share:'Share',save:'Save video',
+dawn:'Dawn has come',again:'One more night',close:'Close',fireStrength:'Fire strength',writeWord:'Write a word',sound:'Sound',share:'Share',save:'Save video',
 cnt1:'Words burned ',cnt2:"<br>Everyone's stars ",cnt3:'<br>Night ',cnt4:'',
 letgo:'Let this word go',fireOut:'The fire is about to go out… a red ember remains in the ash',fireLow:'The fire is getting small. Feed it some wood.',
 becameStar:'"{t}" became a star',constellation:'A small constellation appeared in the sky',brighter:'The night sky grew a little brighter',leonid:'Tonight is the Leonid meteor shower',geminid:'Tonight is the Geminid meteor shower',xmas:'Tonight is Christmas night',fullmoon:'Tonight is a full moon night',mirage:'A mirage appeared. Tap to take a look.',live:'● LIVE',mgTokyo:'Shibuya, Tokyo',mgSeoul:'Seoul, Han River',mgTaipei:'Taipei',mgHK:'Hong Kong',mgSydney:'Sydney',kettle:'🍵 Kettle',boiled:'The water is boiling',kettlePut:'Put the kettle on the fire. Wait for the water to boil.',
@@ -192,7 +192,7 @@ freeToPlay:'免费游玩',
 skyPhoto:'天空照片',skyPhotoShared:'已分享天空照片',skyPhotoSaved:'已保存天空照片',skyPhotoFailed:'拍照失败了',
 village:'回到普尼绿洲村',villageShort:'🏕️ 回村庄',
 puniSurvivor:'玩Puni Survivor',puniSurvivorShort:'🎮 Puni Survivor',
-dawn:'天亮了',again:'再过一夜',close:'关闭',share:'分享',save:'保存视频',
+dawn:'天亮了',again:'再过一夜',close:'关闭',fireStrength:'火势',writeWord:'写一句话',sound:'声音',share:'分享',save:'保存视频',
 cnt1:'烧掉的话语　',cnt2:'<br>大家的星星　',cnt3:'<br>今晚是第',cnt4:'夜',
 letgo:'放下这句话',fireOut:'火快要熄灭了……灰烬中还留着红红的炭',fireLow:'火变小了。添些柴吧。',
 becameStar:'「{t}」变成了星星',constellation:'天空中出现了一个小小的星座',brighter:'夜空变得稍微明亮了一点',leonid:'今晚是狮子座流星雨之夜',geminid:'今晚是双子座流星雨之夜',xmas:'今晚是圣诞之夜',fullmoon:'今晚是满月之夜',mirage:'出现了海市蜃楼。点一下看看吧。',live:'● 直播',mgTokyo:'东京·涩谷',mgSeoul:'首尔·汉江',mgTaipei:'台北',mgHK:'香港',mgSydney:'悉尼',kettle:'🍵 水壶',boiled:'水烧开了',kettlePut:'把水壶放在火上。等水烧开吧。',
@@ -244,6 +244,11 @@ function applyLang(){
  $('stT').placeholder=TR('ph')+tonight()+TR('phEnd');
  $('stGo').textContent=TR('go');
  $('stExit').setAttribute('aria-label',TR('streamExit'));
+ $('hb').setAttribute('aria-label',TR('fireStrength'));
+ $('stWrite').setAttribute('aria-label',TR('writeWord'));
+ $('mgx').setAttribute('aria-label',TR('close'));
+ $('stX').setAttribute('aria-label',TR('close'));
+ $('snd').setAttribute('aria-label',TR('sound'));
  $('skyBtn').title=TR('skyPhoto');$('skyBtn').setAttribute('aria-label',TR('skyPhoto'));
  $('snd').textContent=on?TR('sndOn'):TR('sndOff');
  $('nb').textContent=nm.on?'🌙 '+Math.floor(Math.min(1,nm.t/NL)*100)+'%':TR('night');
@@ -382,7 +387,7 @@ function updateFire(dt,k){
  $('hf').style.width=(heat*100)+'%';
  for(const t in WOOD){if(nm.on&&pr>.88)break;gt[t]+=dt;if(gt[t]>=WOOD[t].gain){gt[t]=0;if(inv[t]<WOOD[t].max){inv[t]++;wbtn()}}}
  lowT-=dt;if(heat<.12&&lowT<=0&&!paper&&!spirit){lowT=45;toast(sum<.02?TR('fireOut'):TR('fireLow'))}
- loops();meteor(dt);
+ loops();meteor(dt);lightning(dt);
  const[fx,fy]=P(CFG.fireX,CFG.fireTarget),[bx,by]=P(CFG.fireX,CFG.fireBase);
  if(CFG.painted&&heat<.6){const[cx,cy]=P(CFG.fireX,CFG.fireMid-.12),a=(.6-heat)*1.1,r=m.dw*.2;
   ctx.save();ctx.translate(cx,cy);ctx.scale(1,1.7);const g=ctx.createRadialGradient(0,0,0,0,0,r);
@@ -465,10 +470,12 @@ $('kt').onclick=()=>{
 // weather & time of day
 const WX=['clear','rain','snow','fog'];
 let wx='clear',GW=1,EB=1,wp=[];
+// 雷（雨のときだけ、時折遠くで光る）：25〜70秒に1回、やさしい光と遠くの低い雷鳴。火・星・紙には触らない
+let lgT=rnd(25,70),lg=null,lgBolt=null,lgThunderT=0;
 const TL=['auto','dusk','night','deep','dawn'];
 let tm='auto';
 function phase(){if(nm.on){const p=nm.t/NL;return p<.2?'dusk':p<.55?'night':p<.8?'deep':'dawn'}if(nm.fin)return 'dawn';if(tm!=='auto')return tm;const h=new Date().getHours();return h>=17&&h<19?'dusk':h>=4&&h<7?'dawn':h<4?'deep':'night'}
-function setWx(w){wx=w;wp=[];GW={clear:1,rain:.72,snow:.9,fog:.82}[w];EB={clear:1,rain:.45,snow:.8,fog:.9}[w];$('wxb').textContent=TR('wx')[w]}
+function setWx(w){wx=w;wp=[];GW={clear:1,rain:.72,snow:.9,fog:.82}[w];EB={clear:1,rain:.45,snow:.8,fog:.9}[w];$('wxb').textContent=TR('wx')[w];lgT=rnd(25,70);lg=null;lgBolt=null;lgThunderT=0}
 $('wxb').onclick=()=>setWx(WX[(WX.indexOf(wx)+1)%4]);
 $('tmb').onclick=()=>{tm=TL[(TL.indexOf(tm)+1)%5];$('tmb').textContent=TR('tm')[tm]};
 $('tmb').textContent=TR('tm')[tm];setWx(Math.random()<.6?'clear':WX[1+Math.random()*3|0]);
@@ -1014,6 +1021,54 @@ function meteor(dt){const gem=isGeminidNight();if(!(isLeonidNight()||gem)||nm.on
   const x=mt.x-q*W*.45,y=mt.y+q*H*.16,tx=x+W*.12,ty=y-H*.035,g=ctx.createLinearGradient(x,y,tx,ty);
   g.addColorStop(0,`rgba(255,255,255,${1-q})`);g.addColorStop(1,'rgba(255,255,255,0)');
   ctx.save();ctx.globalCompositeOperation='lighter';ctx.strokeStyle=g;ctx.lineWidth=2;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(tx,ty);ctx.stroke();ctx.restore()}}
+// 雷：雨のときだけ、25〜70秒に1回、遠くで光る。光は白青のやさしい明滅（最大0.18、軽いモードは0.10）、
+// たまに二度光り、たまに細い稲妻が一瞬だけ見える。雷鳴は光から0.5〜2秒遅れて、遠くの低いゴロゴロ音
+// （合成音、master経由なので音のON/OFFとおやすみモードの半分がそのまま効く）。文字・お知らせ・i18nキーなし
+function lgPulse(t,rise,decay){if(t<0)return 0;if(t<rise)return t/rise;return Math.max(0,1-(t-rise)/decay)}
+function lgAlpha(){if(!lg)return 0;const p=lg.peak;
+ if(lg.dbl)return p*Math.max(lgPulse(lg.t,.1,.25),lgPulse(lg.t-.16,.1,.35));
+ return p*lgPulse(lg.t,.1,.45)}
+function lgStrike(){
+ lg={t:0,dbl:Math.random()<.35,peak:LIGHT?rnd(.07,.10):rnd(.12,.18)};
+ lgThunderT=rnd(.5,2);
+ if(!LIGHT&&Math.random()<.5){
+  const pts=[[rnd(.15,.85)*W,0]];let x=pts[0][0],y=0;
+  while(y<H*.32){y+=rnd(18,42);x+=rnd(-28,28);pts.push([x,y])}
+  lgBolt=pts;
+ }else lgBolt=null;
+}
+function lightning(dt){
+ if(wx!=='rain'){lg=null;lgBolt=null;lgThunderT=0;return}
+ if(lg){lg.t+=dt;if(lg.t>(lg.dbl?.75:.6)){lg=null;lgBolt=null}}
+ else{lgT-=dt;if(lgT<=0){lgStrike();lgT=rnd(25,70)}}
+ if(lgThunderT>0){lgThunderT-=dt;if(lgThunderT<=0){lgThunderT=0;thunder()}}
+}
+function thunder(){
+ if(!AC||!on)return;
+ try{
+  const t0=AC.currentTime,len=AC.sampleRate*3|0,b=AC.createBuffer(1,len,AC.sampleRate),d=b.getChannelData(0);
+  for(let i=0;i<len;i++)d[i]=Math.random()*2-1;
+  const s=AC.createBufferSource();s.buffer=b;
+  const f=AC.createBiquadFilter();f.type='lowpass';f.frequency.value=120;
+  const g=AC.createGain();
+  g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(.22,t0+.25);g.gain.exponentialRampToValueAtTime(.001,t0+2.8);
+  s.connect(f);f.connect(g);g.connect(master);s.start(t0);s.stop(t0+3);
+ }catch(e){}
+}
+function drawLightning(){
+ if(!lg)return;
+ const a=lgAlpha();
+ if(a>.004){ctx.fillStyle=`rgba(200,220,255,${a})`;ctx.fillRect(0,0,W,H)}
+ if(lgBolt&&lg.t<.3){
+  const ba=.5*(1-lg.t/.3);
+  ctx.save();ctx.lineJoin='round';ctx.lineCap='round';
+  ctx.strokeStyle=`rgba(220,235,255,${ba*.3})`;ctx.lineWidth=5;ctx.beginPath();
+  lgBolt.forEach((p,i)=>{i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])});ctx.stroke();
+  ctx.strokeStyle=`rgba(235,242,255,${ba})`;ctx.lineWidth=1.5;ctx.beginPath();
+  lgBolt.forEach((p,i)=>{i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])});ctx.stroke();
+  ctx.restore();
+ }
+}
 // クリスマスの夜（12月24日18時〜25日6時）：雪が降り、空に大きな星が光る
 function isChristmasNight(){const d=new Date();if(d.getMonth()!==11)return false;const dd=d.getDate(),h=d.getHours();return (dd===24&&h>=18)||(dd===25&&h<6)}
 let xwp=[],xmasToast=false;
@@ -1275,7 +1330,7 @@ function frame(now){
  // ash (paper becomes ash and rises with the embers)
  ash=ash.filter(a=>{a.l+=dt;if(a.l>a.m)return false;const q=a.l/a.m;a.x+=(a.vx+Math.sin(T*3+a.p)*24)*dt;a.y+=a.vy*dt;a.r+=a.vr*dt;
   ctx.save();ctx.translate(a.x,a.y);ctx.rotate(a.r);ctx.fillStyle=`rgba(150,140,125,${.55*(1-q)})`;ctx.fillRect(-a.s/2,-a.s/4,a.s,a.s/2);ctx.restore();return true});
- drawWx(dt,k);drawXmas(dt,k);drawMoon(dt,k);
+ drawWx(dt,k);drawXmas(dt,k);drawMoon(dt,k);drawLightning();
  if(rec){const d=cv.width/W,ar=720/1280;let cw=W,ch=W/ar;if(ch>H){ch=H;cw=H*ar}
   const[fx]=P(CFG.fireX,CFG.fireMid),cx=Math.min(W-cw,Math.max(0,fx-cw/2)),cy=(H-ch)*.5;
   rctx.drawImage(cv,cx*d,cy*d,cw*d,ch*d,0,0,720,1280);
